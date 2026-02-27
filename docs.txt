@@ -1,0 +1,17 @@
+Register ==
+Login == 
+View Profile ==
+changes PIN 
+Logout
+View Leadership
+Trouble fund progress report
+Donation Report 
+Deposit
+Transaction History
+Group Account Balance
+Personal Account Balance
+Donation Total
+Create donation 
+Create Go fund me 
+
+Transaction Type (Donation,Savings,Trouble Funds,Transfer)

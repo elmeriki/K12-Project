@@ -1,0 +1,73 @@
+
+{% load static %}
+<!doctype html>
+<html lang="en">
+{% include "ext/header.html" %}
+<body class="bg-white">
+    <!-- loader -->
+    <div id="loader">
+        <img src="{% static 'assets/img/loading-icon.png'  %} " alt="icon" class="loading-icon">
+    </div>
+    <!-- * loader -->
+
+    <!-- App Header -->
+    <div class="appHeader no-border">
+        <div class="left">
+            <a href="#" class="headerButton goBack">
+                <ion-icon name="wallet-outline"></ion-icon>
+            </a>
+        </div>
+        <div class="pageTitle">
+            WELCOME TO K12
+        </div>
+        <div class="right">
+        </div>
+    </div>
+    <!-- * App Header -->
+
+    <!-- App Capsule -->
+    <div id="appCapsule">
+
+        <div class="section">
+            <div class="splash-page mt-5 mb-5">
+                <div class="mb-3"><img src="{% static 'assets/img/k12_logo.png'  %}" alt="image" width="200px">
+                </div>
+                <h2 class="mb-2">Back again? Let’s go!</h2>
+                <p>
+                    Welcome to K12 App, manage daily savings and track group activities easily.
+                </p>
+
+                <br>
+{% if messages %}
+{% for message in messages %}
+<div class="alert alert-primary alert-dismissible fade show" role="alert">
+  <strong>{{message}}</strong> 
+  <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+</div>
+{% endfor %}
+{% else %}
+
+{% endif %}
+
+            </div>
+        </div>
+
+
+        <div class="fixed-bar">
+            <div class="row">
+                <div class="col-6">
+                    <a href="/register" class="btn btn-lg btn-outline-secondary btn-block">Register</a>
+                </div>
+                <div class="col-6">
+                    <a href="/login" class="btn btn-lg btn-primary btn-block">Login</a>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    {% include "ext/footer.html" %}
+
+</body>
+
+</html>

@@ -1,0 +1,81 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+  {% include 'ext/header.html' %}
+  <body>
+    <!-- loader -->
+    {% comment %} <div id="loader">
+      <img src="{% static 'assets/img/loading-icon.png' %} " alt="icon" class="loading-icon" />
+    </div> {% endcomment %}
+    <!-- * loader -->
+
+    <!-- App Header -->
+    <div class="appHeader no-border transparent position-absolute">
+      <div class="left">
+        <a href="/" class="headerButton goBack"><ion-icon name="home-outline"></ion-icon></a>
+      </div>
+      <div class="pageTitle"></div>
+      <div class="right"></div>
+    </div>
+    <!-- * App Header -->
+
+    <!-- App Capsule -->
+    <div id="appCapsule">
+      <div class="section mt-2 text-center">
+        <h1>Log in</h1>
+        <h4>Access your account.</h4>
+      </div>
+      <div class="section mb-5 p-2">
+        <form action="/members_login" method="post" onsubmit="submutbutton.disabled = true; return true;"  autocomplete="off">
+            {% csrf_token %}
+          <div class="card">
+            <div class="card-body pb-1">
+              <div class="form-group basic">
+                <div class="input-wrapper">
+                  <label class="label" for="email1">PHONE NUMBER</label>
+                  <input type="number" class="form-control" name="username" id="email1" placeholder="cell phone number" />
+                  <i class="clear-input"><ion-icon name="close-circle"></ion-icon></i>
+                </div>
+              </div>
+
+              <div class="form-group basic">
+                <div class="input-wrapper">
+                  <label class="label" for="password1">PIN</label>
+                  <input type="password" class="form-control" name="password" id="password1" inputmode="numeric" pattern="[0-9]*" maxlength="5" autocomplete="off" placeholder="Enter PIN" />
+                  <i class="clear-input"><ion-icon name="close-circle"></ion-icon></i>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-links mt-2">
+            <div>
+              <a href="/register">REGISTER</a>
+            </div>
+            <div>
+              <a href="#" class="text-muted">RESET PIN</a>
+            </div>
+          </div>
+<br>
+{% if messages %}
+{% for message in messages %}
+<div class="alert alert-primary alert-dismissible fade show" role="alert">
+  <strong>{{message}}</strong> 
+  <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+</div>
+{% endfor %}
+{% else %}
+
+{% endif %}
+
+          <div class="form-button-group transparent">
+            <button type="submit" name="submutbutton" class="btn btn-primary btn-block btn-lg">Log in</button>
+          </div>
+        </form>
+      </div>
+    </div>
+    <!-- * App Capsule -->
+
+    {% include 'ext/footer.html' %}
+  </body>
+</html>
