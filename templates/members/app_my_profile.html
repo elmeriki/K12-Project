@@ -1,0 +1,113 @@
+{% load static %}
+<!doctype html>
+<html lang="en">
+{% include "../ext/header.html" %}
+<body>
+
+      <!-- loader -->
+        {% include "members/app_loader.html" %}
+    <!-- * loader -->
+
+    <!-- * App Header -->
+    {% include "members/app_header.html" %}
+    <!-- * App Header -->
+
+    <!-- App Capsule -->
+    <div id="appCapsule">
+
+        <div class="section mt-3 text-center">
+            <div class="avatar-section">
+                <a href="#">
+                    <img src="{% static 'assets/img/photo.png'  %}" alt="avatar" class="imaged w100 rounded">
+                    <span class="button">
+                        <ion-icon name="camera-outline"></ion-icon>
+                    </span>
+                </a>
+            </div>
+        </div>
+
+        <div class="listview-title mt-1">Theme</div>
+        <ul class="listview image-listview text inset no-line">
+            <li>
+                <div class="item">
+                    <div class="in">
+                        <div>
+                            Dark Mode
+                        </div>
+                        <div class="form-check form-switch  ms-2">
+                            <input class="form-check-input dark-mode-switch" type="checkbox" id="darkmodeSwitch">
+                            <label class="form-check-label" for="darkmodeSwitch"></label>
+                        </div>
+                    </div>
+                </div>
+            </li>
+        </ul>
+
+ 
+
+        <div class="listview-title mt-1">Personal Information</div>
+        <ul class="listview image-listview text inset">
+            <li>
+                <a href="#" class="item">
+                    <div class="in">
+                        <div>{{members_instance.first_name}}</div>
+                    </div>
+                </a>
+            </li>
+               <li>
+                <a href="#" class="item">
+                    <div class="in">
+                        <div>{{members_instance.last_name}}</div>
+                    </div>
+                </a>
+            </li>
+               <li>
+                <a href="#" class="item">
+                    <div class="in">
+                        <div>{{members_instance.username}}</div>
+                    </div>
+                </a>
+            </li>
+            <li>
+                <a href="#" class="item">
+                    <div class="in">
+                        <div>{{members_instance.email}}</div>
+                    </div>
+                </a>
+            </li>
+        </ul>
+
+        <div class="listview-title mt-1">Security</div>
+        <ul class="listview image-listview text mb-2 inset">
+            <li>
+                <a href="/reset_pin" class="item">
+                    <div class="in text-danger">
+                        <div>Change PIN</div>
+                    </div>
+                </a>
+            </li>
+            <li>
+                <a href="/member_logout" class="item">
+                    <div class="in">
+                        <div>Log out all devices</div>
+                    </div>
+                </a>
+            </li>
+        </ul>
+
+
+    </div>
+    <!-- * App Capsule -->
+
+
+    <!-- App Bottom Menu -->
+    {% include "members/app_buttom_menu.html" %}
+    <!-- App Bottom Menu -->
+    {% include "members/app_modals.html" %}
+
+
+{% include "../ext/footer.html" %}
+
+</body>
+
+</html>

@@ -1,0 +1,84 @@
+{% load static %}
+<!doctype html>
+<html lang="en">
+{% include "../ext/header.html" %}
+<body>
+
+    <!-- loader -->
+    {% comment %} <div id="loader">
+        <img src="assets/img/loading-icon.png" alt="icon" class="loading-icon">
+    </div> {% endcomment %}
+    <!-- * loader -->
+
+    <!-- * App Header -->
+    {% include "members/app_header.html" %}
+    <!-- * App Header -->
+
+    <!-- App Capsule -->
+    <div id="appCapsule">
+
+        <div class="section full">
+
+            <ul class="listview image-listview flush">
+                <li class="active">
+                    <a href="/transactions_details" class="item">
+                        <div class="icon-box bg-primary">
+                            <ion-icon name="arrow-down-outline"></ion-icon>
+                        </div>
+                        <div class="in">
+                            <div>
+                                <div class="mb-05"><strong>Payment Received</strong></div>
+                                <div class="text-small mb-05">John sent you <b>$ 50</b></div>
+                                <div class="text-xsmall">5/3/2020 10:30 AM</div>
+                            </div>
+                        </div>
+                    </a>
+                </li>
+                <li class="active">
+                    <a href="/transactions_details" class="item">
+                        <div class="icon-box bg-success">
+                            <ion-icon name="arrow-forward-outline"></ion-icon>
+                        </div>
+                        <div class="in">
+                            <div>
+                                <div class="mb-05"><strong>Money has been sent</strong></div>
+                                <div class="text-small mb-05">The money you sent to John was successfully sent.</div>
+                                <div class="text-xsmall">5/3/2020 10:30 AM</div>
+                            </div>
+                        </div>
+                    </a>
+                </li>
+
+                <li>
+                    <a href="/transactions_details" class="item">
+                        <div class="icon-box bg-primary">
+                            <ion-icon name="arrow-down-outline"></ion-icon>
+                        </div>
+                        <div class="in">
+                            <div>
+                                <div class="mb-05"><strong>Payment Received</strong></div>
+                                <div class="text-small mb-05">John sent you <b>$ 50</b></div>
+                                <div class="text-xsmall">5/3/2020 10:30 AM</div>
+                            </div>
+                        </div>
+                    </a>
+                </li>
+            </ul>
+
+        </div>
+
+    </div>
+    <!-- * App Capsule -->
+
+
+    <!-- App Bottom Menu -->
+    {% include "members/app_buttom_menu.html" %}
+    {% include "members/app_modals.html" %}
+    <!-- App Bottom Menu -->
+
+
+{% include "../ext/footer.html" %}
+
+</body>
+
+</html>

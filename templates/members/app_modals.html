@@ -1,0 +1,133 @@
+<!-- Deposit Action Sheet -->
+<div class="modal fade action-sheet" id="donationActionSheet" tabindex="-1" role="dialog">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Donation</h5>
+      </div>
+      <div class="modal-body">
+        <div class="action-sheet-content">
+          <form action="#" method="post" autocomplete="off">
+            {% csrf_token %}
+
+            <div class="form-group basic">
+              <div class="input-wrapper">
+                <label class="label" for="account2d">For</label>
+                <select class="form-control custom-select" id="account2d">
+                  <option value="0">Born House</option>
+                  <option value="1">Die House</option>
+                  <option value="1">Wedding</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="form-group basic">
+              <label class="label">Amount</label>
+              <div class="input-group mb-2">
+                <span class="input-group-text" id="basic-addonb1">XAF</span>
+                <input type="number" class="form-control" placeholder="Min saving amount is 500 XAF" />
+              </div>
+            </div>
+
+            <div class="form-group basic">
+              <div class="input-wrapper">
+                <label class="label" for="text11d">Reference</label>
+                <input type="text" class="form-control" id="text11d" placeholder="Min saving amoun is 500 XAF" />
+                <i class="clear-input"><ion-icon name="close-circle"></ion-icon></i>
+              </div>
+            </div>
+
+            <div class="form-group basic">
+              <button type="button" class="btn btn-primary btn-block btn-lg" data-bs-dismiss="modal">Pay</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- * Deposit Action Sheet -->
+
+<!-- Deposit Action Sheet -->
+<div class="modal fade action-sheet" id="withdrawActionSheet" tabindex="-1" role="dialog">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Smart Savings</h5>
+      </div>
+      <div class="modal-body">
+        <div class="action-sheet-content">
+          <form action="/verify_payment_amount" method="POST" aria-required="true" autocomplete="off">
+            {% csrf_token %}
+            <div class="form-group basic">
+              <label class="label">Amount</label>
+              <div class="input-group mb-2">
+                <span class="input-group-text" id="basic-addonb1">XAF</span>
+            <input type="number" class="form-control" name="amount" placeholder="Min saving amount is 500 XAF" min="500" required />              </div>
+            </div>
+
+            <div class="form-group basic">
+              <div class="input-wrapper">
+                <label class="label" for="text11d">Reference</label>
+                <input type="text" class="form-control" name="reference" id="text11d" placeholder="Enter savings reference" required />
+                <i class="clear-input"><ion-icon name="close-circle"></ion-icon></i>
+              </div>
+            </div>
+
+            <div class="form-group basic">
+              <input type="submit" value="Continue" class="btn btn-warning btn-block btn-lg"/>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- * Deposit Action Sheet -->
+
+<!-- Transfer Sheet -->
+<div class="modal fade action-sheet" id="transferActionSheet" tabindex="-1" role="dialog">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Transfer Money</h5>
+      </div>
+      <div class="modal-body">
+        <div class="action-sheet-content">
+          <form>
+            <div class="form-group basic">
+              <div class="input-wrapper">
+                <label class="label" for="account2d">From</label>
+                <select class="form-control custom-select" id="account2d">
+                  <option value="0">Savings (*** 5019)</option>
+                  <option value="1">Trouble Funds (*** 6212)</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="form-group basic">
+              <div class="input-wrapper">
+                <label class="label" for="text11d">To</label>
+                <input type="email" class="form-control" id="text11d" placeholder="Enter username of member" />
+                <i class="clear-input"><ion-icon name="close-circle"></ion-icon></i>
+              </div>
+            </div>
+
+            <div class="form-group basic">
+              <label class="label">Enter Amount</label>
+              <div class="input-group mb-2">
+                <span class="input-group-text" id="basic-addonb1">XAF</span>
+                <input type="text" class="form-control" placeholder="Enter an amount" />
+              </div>
+            </div>
+
+            <div class="form-group basic">
+              <button type="button" class="btn btn-primary btn-block btn-lg" data-bs-dismiss="modal">Confirm</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- * Transfer Action Sheet -->

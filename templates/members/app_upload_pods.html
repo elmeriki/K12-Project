@@ -1,0 +1,92 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+  {% include '../ext/header.html' %}
+  <body>
+
+    <!-- loader -->
+        {% include "members/app_loader.html" %}
+    <!-- * loader -->
+
+    <!-- * App Header -->
+    {% include 'members/app_header.html' %}
+    <!-- * App Header -->
+
+    <!-- App Capsule -->
+    <div id="appCapsule">
+
+      <div class="section mt-2 text-center">
+        <h1>Upload MOMO POD</h1>
+        <p class="">The MoMo screenshot will be carefully verified before any payment is credited to your account. Submitting a fake or altered proof of payment will result in immediate cancellation of the transaction and may lead to your account being blocked for fraud.</p>
+      </div>
+
+      <div class="section mb-5 p-2">
+        <form action="/submit_transaction" enctype="multipart/form-data" id="registerForm" method="post" onsubmit="submutbutton.disabled = true; return true;" autocomplete="off">
+          {% csrf_token %}
+          <div class="card">
+            <div class="card-body">
+              <div class="form-group basic">
+                <div class="input-wrapper">
+                  <label class="label" for="email1">Username</label>
+                  <input type="number" class="form-control" id="email1" name="username" readonly value="{{request.user.username}}"/>
+                  <i class="clear-input"><ion-icon name="close-circle"></ion-icon></i>
+                </div>
+              </div>
+              <div class="form-group basic">
+                <div class="input-wrapper">
+                  <label class="label" for="email1">Amount</label>
+                  <input type="number" class="form-control" name="amount" id="email1" readonly value="{{amount}}" />
+                  <i class="clear-input"><ion-icon name="close-circle"></ion-icon></i>
+                </div>
+              </div>
+              <div class="form-group basic">
+                <div class="input-wrapper">
+                  <label class="label" for="email1">Payment Reference</label>
+                  <input type="text" class="form-control" name="reference" id="email1" readonly value="{{reference}}" placeholder="Your e-mail" />
+                  <i class="clear-input"><ion-icon name="close-circle"></ion-icon></i>
+                </div>
+              </div>
+
+                   <div class="custom-file-upload" id="fileUpload1">
+                            <input type="file" id="fileuploadInput" name="pod" accept=".png, .jpg, .jpeg">
+                            <label for="fileuploadInput">
+                                <span>
+                                    <strong>
+                                        <ion-icon name="arrow-up-circle-outline"></ion-icon>
+                                        <i>Click Upload Screenshot</i>
+                                    </strong>
+                                </span>
+                            </label>
+                            
+                        </div>
+                       <center><span class="text-danger text-center">Upload POD for {{amount}}XAF for verification</span> </center>
+            </div>
+            
+          </div>
+          <br />
+          <br />
+
+          {% if messages %}
+            {% for message in messages %}
+              <div class="alert alert-primary alert-dismissible fade show" role="alert">
+                <strong>{{ message }}</strong>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+              </div>
+            {% endfor %}
+          {% else %}
+
+          {% endif %}
+          <br>
+          <button type="submit" name="submutbutton" class="btn btn-primary btn-block btn-lg">Finish</button>
+        </form>
+      </div>
+    </div>
+    <!-- * App Capsule -->
+
+    <!-- App Bottom Menu -->
+    {% include 'members/app_buttom_menu.html' %}
+    <!-- App Bottom Menu -->
+
+    {% include '../ext/footer.html' %}
+  </body>
+</html>

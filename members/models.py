@@ -5,12 +5,13 @@ from k12auth.models import *
 
 
 # Create your models here.
-class account(models.Model):
+class Account(models.Model):
     member = models.ForeignKey(User,on_delete=models.CASCADE,null=True,blank=True)
     memberBalance=  models.DecimalField(max_digits=11,decimal_places=2,default=0,blank=True,null=True)
     troubleFundsBalance=  models.DecimalField(max_digits=11,decimal_places=2,default=0,blank=True,null=True)
     mainAccountBalance=  models.DecimalField(max_digits=11,decimal_places=2,default=0,blank=True,null=True)
     donationAccountBalance=  models.DecimalField(max_digits=11,decimal_places=2,default=0,blank=True,null=True)
+    accountNumber = models.CharField(max_length=200,default=0,null=True,blank=True)
     created_at = models.DateField(auto_now_add=True)
     updated_at = models.DateField(auto_now=True)
     def __str__(self):

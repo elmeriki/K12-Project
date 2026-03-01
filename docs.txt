@@ -1,17 +1,29 @@
 Register ==
 Login == 
 View Profile ==
-changes PIN 
-Logout
-View Leadership
+changes PIN ==
+Logout ==
+View Member ==
+Activate Members account ==
 Trouble fund progress report
 Donation Report 
 Deposit
-Transaction History
-Group Account Balance
-Personal Account Balance
-Donation Total
+Transaction History ==
+Group Account Balance == 
+Personal Account Balance ==
+Donation Total ==
 Create donation 
 Create Go fund me 
+Members details from Home ==
+Transaction Type (Donation,Savings,Trouble Funds,Transfer) ==
 
-Transaction Type (Donation,Savings,Trouble Funds,Transfer)
+designated Account Number
+650000000
+
+Master account which shows all the account balane 
+The super account activate the master account 
+Other account make savings to the main account 
+
+
+transactionStatus (Initiated,Verified,Rejected,Cancel)
+transactionType (Savings, Trouble Funds,Donation,Transfer)

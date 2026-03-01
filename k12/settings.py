@@ -147,3 +147,8 @@ DEFAULT_AUTO_FIELD='django.db.models.AutoField'
 # STATIC_ROOT = '/home/username/k12.com/static'
 
 
+
+
+# 'var1 in Class.__dict__
+
+# var

@@ -15,7 +15,7 @@ from datetime import date
 from django.db import transaction
 import threading
 from k12auth.models import *
-
+from members.models import *
 
 def welcome(request):
     return render(request,'index.html',{})
@@ -29,11 +29,29 @@ def user_login(request):
 def user_registrattion(request):
     return render(request,'auth/register.html',{})
 
+@login_required
+def member_dashboard(request):
+    members_instance=User.objects.filter( Q(is_member=True,is_staff=False) | Q(is_member=False,is_staff=False) )
+    username = request.user.username
+    select_members_instance=User.objects.get(username=username)
+    mainAccountBalance = Account.objects.filter(member=select_members_instance).aggregate(total=Sum('mainAccountBalance') )['total'] or 0
+    membersBalance = Account.objects.filter(member=select_members_instance).aggregate(total=Sum('memberBalance') )['total'] or 0
+    troubleFundsBalance = Account.objects.filter(member=select_members_instance).aggregate(total=Sum('troubleFundsBalance') )['total'] or 0
+    donationAccountBalance = Account.objects.filter(member=select_members_instance).aggregate(total=Sum('donationAccountBalance') )['total'] or 0
+    transaction_log = Transaction.objects.filter(member=select_members_instance).order_by('-created_at')[:6]
+    data = {
+        'members_instance':members_instance,
+        'mainAccountBalance':mainAccountBalance,
+        'membersBalance':membersBalance,
+        'troubleFundsBalance':troubleFundsBalance,
+        'donationAccountBalance':donationAccountBalance,
+        'transaction_log':transaction_log
+    }    
+    return render(request,'members/dashboard.html',context=data)
 
-def members_profile(request):
-    return render(request,'members/profile.html',{})
 
-
+def reset_pinView(request):
+    return render(request,'members/app_change_pin.html',{})
 
 
 @transaction.atomic
@@ -72,6 +90,10 @@ def register_a_memberView(request):
         create_new_member_account=User.objects.create_user(username=phone,first_name=fname,last_name=lname,email=email,password=password)
         if create_new_member_account:
             create_new_member_account.save()
+            
+            create_new_members_account = Account(member=create_new_member_account,accountNumber=phone)
+            create_new_members_account.save()
+            
             messages.info(request,"Customer account has been created successfully")
             return redirect('/register')
         else:
@@ -99,15 +121,15 @@ def members_loginView(request):
         # customise error messages handler
         if userlog is not None:
             auth.login(request, userlog)
-            if request.user.is_authenticated:
-                return redirect('/members_profile')
+            if request.user.is_authenticated and request.user.is_member or request.user.is_authenticated and request.user.is_cashier or request.user.is_authenticated and request.user.is_admin:
+                return redirect('/members_dashboard')
         else:
             messages.info(request,"Incorrect login credentials.")
             return redirect('/login')
         
         if userlog is not None:
             auth.login(request, userlog)
-            if request.user.is_authenticated and not request.user.is_activation:
+            if request.user.is_authenticated and not request.user.is_member:
                 messages.info(request,"Your acount is not activated ")
                 return redirect('/login')
         else:

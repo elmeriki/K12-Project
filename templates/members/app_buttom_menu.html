@@ -1,0 +1,65 @@
+<!-- App Bottom Menu -->
+    <div class="appBottomMenu">
+
+        {% if "/members_dashboard" in request.path %}
+        <a href="/members_dashboard" class="item active">
+            <div class="col">
+                <ion-icon name="home-outline"></ion-icon>
+                <strong>Home</strong>
+            </div>
+        </a>
+        {% else %}
+        <a href="/members_dashboard" class="item">
+            <div class="col">
+                <ion-icon name="home-outline"></ion-icon>
+                <strong>Home</strong>
+            </div>
+        </a>
+        {% endif %}
+
+        <a href="#" class="item" data-bs-toggle="modal" data-bs-target="#withdrawActionSheet">
+            <div class="col">
+                <ion-icon name="archive-outline"></ion-icon>
+                <strong>Save Now</strong>
+            </div>
+        </a>
+        <a href="#" class="item" data-bs-toggle="modal" data-bs-target="#donationActionSheet">
+            <div class="col">
+                <ion-icon name="gift-outline"></ion-icon>
+                <strong>Donate</strong>
+            </div>
+        </a>
+        
+        {% if "/member_list" in request.path %}
+        <a href="/member_list" class="item active">
+            <div class="col">
+            <ion-icon name="people-outline"></ion-icon>
+                <strong>Members</strong>
+            </div>
+        </a>
+        {% else %}
+        <a href="/member_list" class="item">
+            <div class="col">
+            <ion-icon name="people-outline"></ion-icon>
+                <strong>Members</strong>
+            </div>
+        </a>
+        {% endif %}
+
+        {% if "/app_setting" in request.path %}
+        <a href="/app_setting" class="item active">
+            <div class="col">
+                <ion-icon name="person-outline"></ion-icon>
+                <strong>My Profile</strong>
+            </div>
+        </a>
+        {% else %}
+        <a href="/app_setting" class="item">
+            <div class="col">
+                <ion-icon name="person-outline"></ion-icon>
+                <strong>My Profile</strong>
+            </div>
+        </a>
+        {% endif %}
+    </div>
+<!-- * App Bottom Menu -->

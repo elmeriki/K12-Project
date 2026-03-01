@@ -1,0 +1,101 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+  <!-- * App Header -->
+  {% include '../ext/header.html' %}
+  <!-- * App Header -->
+
+  <body class="bg-white">
+   <!-- loader -->
+        {% include "members/app_loader.html" %}
+    <!-- * loader -->
+
+    <!-- App Header -->
+    <div class="appHeader no-border">
+      <div class="left">
+        <a href="#" class="headerButton goBack"><ion-icon name="chevron-back-outline"></ion-icon></a>
+      </div>
+      <div class="pageTitle">Payment Processing</div>
+      <div class="right"></div>
+    </div>
+    <!-- * App Header -->
+
+    <!-- App Capsule -->
+    <div id="appCapsule">
+      <div class="section">
+        <div class="splash-page mt-5 mb-5">
+          <div class="transfer-verification">
+            <div class="transfer-amount">
+              <span class="caption">Amount</span>
+              <h2>{{ amount }} XAF</h2>
+            </div>
+            <div class="from-to-block mb-5">
+              <div class="item text-start">
+                <ion-icon name="wallet-outline" style="font-size: 48px;"></ion-icon>
+                <strong>Wallet</strong>
+              </div>
+              <div class="item text-end">
+                <ion-icon name="business-outline" style="font-size: 48px;"></ion-icon>
+                <strong>Savings</strong>
+              </div>
+              <div class="arrow"></div>
+            </div>
+          </div>
+          {% comment %} <h2 class="mb-2 mt-2">Process Payment</h2> {% endcomment %}
+          <p>
+            You are about to save <strong class="text-primary">{{amount}} XAF</strong> Into <strong>K12</strong> savings account <br />
+            Use the MoMo details below to make your payment. After payment, upload the screenshot for verification. The amount must match the proof of payment.
+            <br><br>
+         <span class="text-danger">Payments will remain pending until verified and approved. Submitting more than one transaction with the same screenshot will be treated as fraud and may result in penalties from the group.</span>
+        </p>
+        </div>
+      </div>
+      <!-- App Capsule -->
+      <div id="appCapsule" class="full-height">
+        <div class="section">
+          <ul class="listview simple-listview no-space mt-3">
+            <li>
+              <span>Momo Name</span>
+              <strong>Kontriman Coop</strong>
+            </li>
+            <li>
+              <span>Momo Number</span>
+              <strong>650065763</strong>
+            </li>
+            <li>
+              <span>OR</span>
+              <strong>*126*14*650065763*{{amount}}#</strong>
+            </li>
+     
+          </ul>
+        </div>
+        <br /><br /><br />
+        <div class="container">
+          <div class="row">
+            <div class="col-6">
+              <a href="/members_dashboard" class="btn btn-lg btn-outline-secondary btn-block">Close</a>
+            </div>
+            <div class="col-6">
+
+            <form action="/upload_pod" method="post">
+            {% csrf_token %}
+            <input type="amount" name="amount" value="{{amount}}" hidden id="">
+            <input type="text" name="reference" value="{{reference}}" hidden id="">
+            <input type="submit" class="btn btn-lg btn-primary btn-block" value="Upload Pod">
+          </form>     
+        </div>
+          </div>
+         
+        </div>
+      </div>
+    </div>
+    <!-- * App Capsule -->
+
+    <!-- App Bottom Menu -->
+    {% include 'members/app_buttom_menu.html' %}
+    <!-- App Bottom Menu -->
+    {% include 'members/app_modals.html' %}
+
+    {% include '../ext/footer.html' %}
+  </body>
+</html>
