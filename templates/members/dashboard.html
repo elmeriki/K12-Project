@@ -21,7 +21,7 @@
         <div class="right">
             <a href="/transactions" class="headerButton">
                 <ion-icon class="icon" name="notifications-outline"></ion-icon>
-                <span class="badge badge-danger">1</span>
+                <span class="badge badge-danger">0</span>
             </a>
             {% comment %} <a href="app-settings.html" class="headerButton">
                 <img src=" {% static 'assets/img/photo.png'  %}" alt="image" class="imaged w32">
@@ -51,7 +51,38 @@
                     </div>
                 </div>
                 <!-- * Balance -->
-                <!-- Wallet Footer -->
+                {% if request.user.is_admin %}
+                <!-- Admin Menu Card -->
+                <div class="wallet-footer">
+                    <div class="item">
+                        <a href="#" >
+                            <div class="icon-wrapper bg-danger">
+                                <ion-icon name="arrow-down-circle-outline"></ion-icon>
+                            </div>
+                            <strong>Reconcile</strong>
+                        </a>
+                    </div>
+                    <div class="item">
+                        <a href="/new_donation" >
+                            <div class="icon-wrapper">
+                               <ion-icon name="heart-outline"></ion-icon>
+                            </div>
+                            <strong>New Donation</strong>
+                        </a>
+                    </div>
+                    <div class="item">
+                        <a href="/unactivated_members">
+                            <div class="icon-wrapper bg-success">
+                                <ion-icon name="send-outline"></ion-icon>
+                            </div>
+                            <strong>Activate Member</strong>
+                        </a>
+                    </div>
+                </div>
+                <!-- * Admin Card -->
+                {% else %}
+
+             <!-- Members Menu Card -->
                 <div class="wallet-footer">
                     <div class="item">
                         <a href="#" data-bs-toggle="modal" data-bs-target="#withdrawActionSheet">
@@ -62,15 +93,15 @@
                         </a>
                     </div>
                     <div class="item">
-                        <a href="#" data-bs-toggle="modal" data-bs-target="#donationActionSheet">
+                        <a href="/donations" >
                             <div class="icon-wrapper">
-                                <ion-icon name="gift-outline"></ion-icon>
+                                <ion-icon name="heart-outline"></ion-icon>
                             </div>
-                            <strong>Donate</strong>
+                            <strong>Donations</strong>
                         </a>
                     </div>
                     <div class="item">
-                        <a href="#" data-bs-toggle="modal" data-bs-target="#transferActionSheet">
+                        <a href="/transfer">
                             <div class="icon-wrapper bg-success">
                                 <ion-icon name="send-outline"></ion-icon>
                             </div>
@@ -85,18 +116,17 @@
                             <strong>Members</strong>
                         </a>
                     </div>
-
                 </div>
-                <!-- * Wallet Footer -->
+                <!-- * Members Footer -->
+                {% endif %}
             </div>
         </div>
-        <!-- Wallet Card -->
+        <!-- Members Menu Card -->
 
 
+        {% if request.user.is_admin %}
 
-
-
-        <!-- Stats -->
+        {% else %}
         <div class="section">
             <div class="row mt-2">
                 <div class="col-6">
@@ -105,7 +135,7 @@
                         <div class=" text-primary"><strong>{{membersBalance}} XAF</strong></div>
                     </div>
                 </div>
-<div class="col-6">
+                <div class="col-6">
                     <div class="stat-box">
                         <div class="title">TROUBLE FUNDS</div>
                         <div class=" text-danger">{{troubleFundsBalance}} XAF</div>
@@ -113,24 +143,25 @@
                 </div>
             </div>
             <div class="row mt-2">
-                <div class="col-12">
+                    <div class="col-12">
                     <div class="stat-box">
-                        <div class="title">DONATIONS</div>
-                        <div class="text-danger">{{donationAccountBalance}} XAF</div>
+                        <div class="title">GROUP REGISTRATION</div>  
+                        <div style="text-align:center; margin: 20px;">
+                        <ion-icon name="people-outline" style="font-size: 80px; color: #4CAF50;"></ion-icon>
+                        <ion-icon name="checkmark-circle-outline" style="font-size: 80px; color: #4CAF50; position: relative; left: -20px; top: 20px;"></ion-icon>
+                        <div style="font-size: 24px; margin-top: 10px; font-weight: bold;"></div>
+                    </div>
+                        <div class=" text-primary"> {{groupRegistrationAmount}} XAF</div>
+                        
                     </div>
                 </div>
-                {% comment %} <div class="col-6">
-                    <div class="stat-box">
-                        <div class="title">Trouble Funds</div>
-                        <div class="">1500000 XAF</div>
-                    </div>
-                </div> {% endcomment %}
             </div> 
         </div>
-        <!-- * Stats -->
+        {% endif %}
 
 
-        <!-- History -->
+{% if request.user.is_member %}  
+<!-- Member Transaction History -->
         <div class="section mt-4">
             <div class="section-heading">
                 <h2 class="title">Transactions</h2>
@@ -141,17 +172,27 @@
                     <!-- item -->
                     {% for eachTransaction in transaction_log %}
                     <li>
-                        <a href="/transactions_details" class="item">
+                        <a href="/transactions_details/{{eachTransaction.id}}" class="item">
                             <div class="icon-box bg-success">
                                 <ion-icon name="arrow-up-outline"></ion-icon>
                             </div>
                             <div class="in">
                                 <div>
                                     <strong>{{eachTransaction.transactionType}}</strong>
-                                    <div class="text-small text-secondary">{{eachTransaction.transactionStatus}}</div>
+                                    {% if eachTransaction.transactionStatus == "Initiated" or eachTransaction.transactionStatus == "Rejected" or  eachTransaction.transactionStatus == "Fraud" %}
+                                    <div class="text-small text-danger">{{eachTransaction.transactionStatus}} <ion-icon name="close-circle-outline"></ion-icon></div>
+                                    {% else %}
+                                    <div class="text-small text-primary">{{eachTransaction.transactionStatus}} <ion-icon name="checkmark-circle-outline"></ion-icon></div>
+                                    {% endif %}
                                 </div>
                                 <div class="text-end">
-                                    <strong>{{eachTransaction.amount}} XAF</strong>
+                                    {% if eachTransaction.transactionStatus == "Initiated" or eachTransaction.transactionStatus == "Rejected" or eachTransaction.transactionStatus == "Fraud"  %}
+                                    <strong>+{{eachTransaction.amount}} XAF</strong>
+                                    {% elif eachTransaction.transactionType == "Deposit" or eachTransaction.transactionType == "Recieving" %}
+                                    <strong>+{{eachTransaction.amount}} XAF</strong>
+                                    {% elif eachTransaction.transactionType == "Donation" or  eachTransaction.transactionType == "Transfer"  %}
+                                    <strong>-{{eachTransaction.amount}} XAF</strong>
+                                    {% endif %}
                                     <div class="text-small">
                                         {{eachTransaction.created_at.date}}
                                     </div>
@@ -161,16 +202,57 @@
                     </li>
                     {% endfor %}
                     <!-- * item -->
-
-
                 </ul>
                 <div class="card-body pt-0">
                     <a href="/transactions" class="btn btn-block btn-outline-secondary">Load more</a>
                 </div>
             </div>
         </div>
-        <!-- History -->
-
+<!-- Member Transaction History -->
+{% else %}
+<!-- Admin Transaction History -->
+        <div class="section mt-4">
+            <div class="section-heading">
+                <h2 class="title">Reconcile Payment</h2>
+                <a href="/transactions" class="link">View All</a>
+            </div>
+            <div class="card">
+                <ul class="listview flush transparent no-line image-listview detailed-list mt-1 mb-1">
+                    <!-- item -->
+                    {% for reconcileData in toBeReconcileTransaction %}
+                    <li>
+                        {% if reconcileData.transactionStatus == "Initiated" %}
+                        <a href="/reconcile_transaction/{{reconcileData.id}}" class="item">
+                        {% else %}
+                        <a href="/transactions_details/{{reconcileData.id}}" class="item">
+                        {% endif %}
+                            <div class="icon-box bg-success">
+                                <ion-icon name="arrow-up-outline"></ion-icon>
+                            </div>
+                            <div class="in">
+                                <div>
+                                    <strong>{{reconcileData.transactionType}}</strong>
+                                    <div class="text-small text-secondary">{{reconcileData.transactionStatus}}</div>
+                                </div>
+                                <div class="text-end">
+                                    <strong>{{reconcileData.amount}} XAF</strong>
+                                    <div class="text-small">
+                                        {{reconcileData.created_at.date}}
+                                    </div>
+                                </div>
+                            </div>
+                        </a>
+                    </li>
+                    {% endfor %}
+                    <!-- * item -->
+                </ul>
+                <div class="card-body pt-0">
+                    <a href="/transactions" class="btn btn-block btn-outline-secondary">Load more</a>
+                </div>
+            </div>
+        </div>
+<!-- Admin Transaction  -->
+{% endif %}
 
          <!-- Send Money -->
         <div class="section full mt-4">
@@ -218,7 +300,8 @@
     {% include "members/app_modals.html" %}
 
 
-    <!-- App Sidebar -->
+    {% if request.user.is_admin%}
+    <!-- Admin Sidebar -->
     <div class="modal fade panelbox panelbox-left" id="sidebarPanel" tabindex="-1" role="dialog">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
@@ -248,38 +331,7 @@
 
                     <!-- action group -->
                     <div class="action-group">
-                        <a href="#" class="action-button">
-                            <div class="in">
-                                <div class="iconbox">
-                                    <ion-icon name="add-outline"></ion-icon>
-                                </div>
-                                Deposit
-                            </div>
-                        </a>
-                        <a href="#" class="action-button">
-                            <div class="in">
-                                <div class="iconbox">
-                                    <ion-icon name="arrow-down-outline"></ion-icon>
-                                </div>
-                                Donates
-                            </div>
-                        </a>
-                        <a href="#" class="action-button">
-                            <div class="in">
-                                <div class="iconbox">
-                                    <ion-icon name="swap-horizontal-outline"></ion-icon>
-                                </div>
-                                Transfer
-                            </div>
-                        </a>
-                        <a href="/app_setting" class="action-button">
-                            <div class="in">
-                                <div class="iconbox">
-                                    <ion-icon name="people-outline"></ion-icon>
-                                </div>
-                                Profiles
-                            </div>
-                        </a>
+                    
                     </div>
                     <!-- * action group -->
 
@@ -314,12 +366,12 @@
                                     <ion-icon name="repeat-outline"></ion-icon>
                                 </div>
                                 <div class="in">
-                                    Transactions
+                                    Reconcile
                                 </div>
                             </a>
                         </li>
                         <li>
-                            <a href="#" class="item">
+                            <a href="/" class="item">
                                 <div class="icon-box bg-primary">
                                     <ion-icon name="gift-outline"></ion-icon>
                                 </div>
@@ -372,7 +424,166 @@
             </div>
         </div>
     </div>
-    <!-- * App Sidebar -->
+    <!-- * Admin Sidebar -->
+
+{% else %}
+    <!-- Member Sidebar -->
+    <div class="modal fade panelbox panelbox-left" id="sidebarPanel" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-body p-0">
+                    <!-- profile box -->
+                    <div class="profileBox pt-2 pb-2">
+                        <div class="image-wrapper">
+                            <img src="{% static 'assets/img/photo.png'  %}" alt="image" class="imaged  w36">
+                        </div>
+                        <div class="in">
+                            <strong>{{request.user.first_name}}</strong>
+                            <div class="text-muted">{{request.user.username}}</div>
+                        </div>
+                        <a href="#" class="btn btn-link btn-icon sidebar-close" data-bs-dismiss="modal">
+                            <ion-icon name="close-outline"></ion-icon>
+                        </a>
+                    </div>
+                    <!-- * profile box -->
+                    <!-- balance -->
+                    <div class="sidebar-balance">
+                        <div class="listview-title">GROUP BALANCE</div>
+                        <div class="in">
+                            <h1 class="amount">{{mainAccountBalance}} XAF</h1>
+                        </div>
+                    </div>
+                    <!-- * balance -->
+
+                    <!-- action group -->
+                    <div class="action-group">
+                        <a href="/donations" class="action-button">
+                            <div class="in">
+                                <div class="iconbox">
+                                    <ion-icon name="heart-outline"></ion-icon>
+                                </div>
+                                Donations
+                            </div>
+                        </a>
+                        <a href="/member_list" class="action-button">
+                            <div class="in">
+                                <div class="iconbox">
+                        <ion-icon name="people-outline"></ion-icon>
+                                </div>
+                                Members
+                            </div>
+                        </a>
+                        <a href="/transfer" class="action-button">
+                            <div class="in">
+                                <div class="iconbox">
+                                    <ion-icon name="swap-horizontal-outline"></ion-icon>
+                                </div>
+                                Transfer
+                            </div>
+                        </a>
+                        <a href="/app_setting" class="action-button">
+                            <div class="in">
+                                <div class="iconbox">
+                                    <ion-icon name="people-outline"></ion-icon>
+                                </div>
+                                Settings
+                            </div>
+                        </a>
+                    </div>
+                    <!-- * action group -->
+
+                    <!-- menu -->
+                    <div class="listview-title mt-1">Menu</div>
+                    <ul class="listview flush transparent no-line image-listview">
+                        <li>
+                            <a href="/members_dashboard" class="item">
+                                <div class="icon-box bg-primary">
+                                    <ion-icon name="home-outline"></ion-icon>
+                                </div>
+                                <div class="in">
+                                    Home
+                                    
+                                </div>
+                            </a>
+                        </li>
+              
+                        {% comment %} <li>
+                            <a href="/member_list" class="item">
+                                <div class="icon-box bg-primary">
+                                    <ion-icon name="people-circle-outline"></ion-icon>
+                                </div>
+                                <div class="in">
+                                    Members
+                                </div>
+                            </a>
+                        </li> {% endcomment %}
+                        <li>
+                            <a href="/transactions" class="item">
+                                <div class="icon-box bg-primary">
+                                    <ion-icon name="repeat-outline"></ion-icon>
+                                </div>
+                                <div class="in">
+                                    Transactions
+                                </div>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="/donations" class="item">
+                                <div class="icon-box bg-primary">
+                                    <ion-icon name="heart-outline"></ion-icon>
+                                </div>
+                                <div class="in">
+                                    Donate Now
+                                </div>
+                            </a>
+                        </li>
+                    </ul>
+                    <!-- * menu -->
+
+                    <!-- others -->
+                    <div class="listview-title mt-1">Others</div>
+                    <ul class="listview flush transparent no-line image-listview">
+                        <li>
+                            <a href="/app_setting" class="item">
+                                <div class="icon-box bg-primary">
+                                    <ion-icon name="person-circle-outline"></ion-icon>
+                                </div>
+                                <div class="in">
+                                    My Profile
+                                </div>
+                            </a>
+                        </li>
+                        {% comment %} <li>
+                            <a href="/member_list" class="item">
+                                <div class="icon-box bg-primary">
+                                    <ion-icon name="chatbubble-outline"></ion-icon>
+                                </div>
+                                <div class="in">
+                                    Group Members
+                                </div>
+                            </a>
+                        </li> {% endcomment %}
+                        <li>
+                            <a href="/member_logout" class="item">
+                                <div class="icon-box bg-primary">
+                                    <ion-icon name="log-out-outline"></ion-icon>
+                                </div>
+                                <div class="in">
+                                    Log out
+                                </div>
+                            </a>
+                        </li>
+
+
+                    </ul>
+                    <!-- * others -->
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- * Member Sidebar -->
+
+    {% endif %}
     {% include "ext/footer.html" %}
 
 </body>

@@ -26,8 +26,8 @@
         <h4>Access your account.</h4>
       </div>
       <div class="section mb-5 p-2">
-        <form action="/members_login" method="post" onsubmit="submutbutton.disabled = true; return true;"  autocomplete="off">
-            {% csrf_token %}
+        <form action="/members_login" method="post" onsubmit="handleSubmit(this)" autocomplete="off">
+          {% csrf_token %}
           <div class="card">
             <div class="card-body pb-1">
               <div class="form-group basic">
@@ -56,17 +56,17 @@
               <a href="#" class="text-muted">RESET PIN</a>
             </div>
           </div>
-<br>
-{% if messages %}
-{% for message in messages %}
-<div class="alert alert-primary alert-dismissible fade show" role="alert">
-  <strong>{{message}}</strong> 
-  <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-</div>
-{% endfor %}
-{% else %}
+          <br />
+          {% if messages %}
+            {% for message in messages %}
+              <div class="alert alert-primary alert-dismissible fade show" role="alert">
+                <strong>{{ message }}</strong>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+              </div>
+            {% endfor %}
+          {% else %}
 
-{% endif %}
+          {% endif %}
 
           <div class="form-button-group transparent">
             <button type="submit" name="submutbutton" class="btn btn-primary btn-block btn-lg">Log in</button>
@@ -75,7 +75,13 @@
       </div>
     </div>
     <!-- * App Capsule -->
-
+    <script>
+      function handleSubmit(form) {
+        const btn = form.querySelector('button[type="submit"]')
+        btn.disabled = true
+        btn.innerText = 'Please wait...'
+      }
+    </script>
     {% include 'ext/footer.html' %}
   </body>
 </html>

@@ -1,0 +1,94 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+  <!-- * App Header -->
+  {% include '../ext/header.html' %}
+  <!-- * App Header -->
+
+  <body class="bg-white">
+   <!-- loader -->
+        {% comment %} {% include "members/app_loader.html" %} {% endcomment %}
+    <!-- * loader -->
+
+    <!-- App Header -->
+    <div class="appHeader no-border">
+      <div class="left">
+        <a href="#" class="headerButton goBack"><ion-icon name="chevron-back-outline"></ion-icon></a>
+      </div>
+      <div class="pageTitle">Donation Confirmation</div>
+      <div class="right"></div>
+    </div>
+    <!-- * App Header -->
+
+    <!-- App Capsule -->
+    <div id="appCapsule">
+      <div class="section">
+        <div class="splash-page mt-5 mb-5">
+          <div class="transfer-verification">
+            <div class="transfer-amount">
+              <span class="caption">Donation</span>
+              <h2>{{ donation_instance.minDonationAmount }} XAF</h2>
+            </div>
+            <div class="from-to-block mb-5">
+              <div class="item text-start">
+                <ion-icon name="wallet-outline" style="font-size: 48px;"></ion-icon>
+                <strong><b></b>{{request.user.first_name | upper}}</strong>
+              </div>
+              <div class="item text-end">
+                <ion-icon name="heart-outline" style="font-size: 48px;"></ion-icon>
+                <strong><b></b>{{donation_instance.member.first_name | upper}}</strong>
+              </div>
+              <div class="arrow"></div>
+            </div>
+          </div>
+          {% comment %} <h2 class="mb-2 mt-2">Process Payment</h2> {% endcomment %}
+          <p>
+            You are about to donation <strong class="text-primary">{{ donation_instance.minDonationAmount }} XAF</strong> to {{donation_instance.member.first_name | upper}} {{donation_instance.member.last_name | upper}}  <br />
+            Reason: <br>
+            {{donation_instance.description}}
+        </p>
+        </div>
+      </div>
+      <!-- App Capsule -->
+        <br /><br />
+        <div class="container">
+          <div class="row">
+            <div class="col-6">
+              <a href="/donations_log/{{donation_instance.id}}" class="btn btn-lg btn-outline-secondary btn-block">Donations</a>
+            </div>
+            <div class="col-6">
+
+            <form action="/make_donation/{{donation_instance.id}}" onsubmit="handleSubmit(this)" method="post">
+            {% csrf_token %}
+            <input type="amount" name="amount" value="{{amount}}" hidden id="">
+            <input type="text" name="reference" value="{{reference}}" hidden id="">
+            {% if request.user.is_admin %}
+            <input type="submit" class="btn btn-lg btn-danger btn-block" disabled value="Members Only">
+            {% else %}
+            <input type="submit" class="btn btn-lg btn-danger btn-block" value="Donate Now">
+            {% endif %}
+          </form>     
+        </div>
+          </div>
+
+    <script>
+      function handleSubmit(form) {
+        const btn = form.querySelector('button[type="submit"]')
+        btn.disabled = true
+        btn.innerText = 'Please wait...'
+      }
+    </script>
+
+        </div>
+      </div>
+    </div>
+    <!-- * App Capsule -->
+
+    <!-- App Bottom Menu -->
+    {% include 'members/app_buttom_menu.html' %}
+    <!-- App Bottom Menu -->
+    {% include 'members/app_modals.html' %}
+
+    {% include '../ext/footer.html' %}
+  </body>
+</html>

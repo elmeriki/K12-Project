@@ -27,39 +27,41 @@
             <div class="card-body">
               <div class="form-group basic">
                 <div class="input-wrapper">
-                  <label class="label" for="email1">First Names</label>
+                  <label class="label" for="email1">FIRST NAME</label>
                   <input type="text" class="form-control" name="fname" id="email1" readonly value="{{select_members_instance.first_name}}"/>
                   <i class="clear-input"><ion-icon name="close-circle"></ion-icon></i>
                 </div>
               </div>
               <div class="form-group basic">
                 <div class="input-wrapper">
-                  <label class="label" for="email1">Last Names</label>
+                  <label class="label" for="email1">LAST NAME</label>
                   <input type="text" class="form-control" name="lname" id="email1" readonly value="{{select_members_instance.last_name}}" placeholder="Enter your last name" />
                   <i class="clear-input"><ion-icon name="close-circle"></ion-icon></i>
                 </div>
               </div>
               <div class="form-group basic">
                 <div class="input-wrapper">
-                  <label class="label" for="email1">Username</label>
+                  <label class="label" for="email1">USERNAME</label>
                   <input type="number" class="form-control" name="username" id="email1" readonly value="{{select_members_instance.username}}" placeholder="Your e-mail" />
                   <i class="clear-input"><ion-icon name="close-circle"></ion-icon></i>
                 </div>
               </div>
-
+              {% if select_members_instance.is_member %}
+              
+              {% else %}
               <div class="form-group basic">
                 <div class="input-wrapper">
-                    <label class="label" for="account2d">Activities</label>
+                    <label class="label" for="account2d">DESIGNATION</label>
                     <select class="form-control custom-select" name="designation" id="account2d" required>
                         <option value="" disabled selected>Select designation</option>
-                        <option value="Admin">Administrator</option>
+                        <option value="Admin">Admin</option>
                         <option value="Member">Member</option>
                     </select>
                 </div>
               </div>
               <div class="form-group basic">
                 <div class="input-wrapper">
-                    <label class="label" for="account2d">Position</label>
+                    <label class="label" for="account2d">POSITION</label>
                     <select class="form-control custom-select" name="position" id="account2d" required>
                         <option value="" disabled selected>Select designation</option>
                         <option value="Member">Member</option>
@@ -72,6 +74,21 @@
                     </select>
                 </div>
               </div>
+
+              <div class="form-group basic">
+                <div class="input-wrapper">
+                    <label class="label" for="account2d">REGISTRATION AMOUNT</label>
+                    <select class="form-control custom-select" name="registrationAmount" id="account2d" required>
+                        <option value="" disabled selected>Select Amount</option>
+                        <option value="1000">1000 XAF</option>
+                        <option value="2000">2000 XAF</option>
+                        <option value="3000">3000 XAF</option>
+                        <option value="5000">5000 XAF</option>
+                        <option value="10000">10000 XAF</option>
+                    </select>
+                </div>
+              </div>
+              {% endif %}
             </div>
           </div>
           <br />
@@ -88,7 +105,14 @@
 
           {% endif %}
           <br><br>
+          {% if select_members_instance.is_member %}
+          
+          <button type="submit" name="submutbutton" disabled class="btn btn-warning btn-block btn-lg">Already Activated</button>
+
+          {% else %}
           <button type="submit" name="submutbutton" class="btn btn-warning btn-block btn-lg">Activate</button>
+
+          {% endif %}
         </form>
       </div>
     </div>

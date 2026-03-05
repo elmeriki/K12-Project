@@ -7,7 +7,7 @@
 
   <body class="bg-white">
    <!-- loader -->
-        {% include "members/app_loader.html" %}
+        {% comment %} {% include "members/app_loader.html" %} {% endcomment %}
     <!-- * loader -->
 
     <!-- App Header -->
@@ -77,7 +77,7 @@
             </div>
             <div class="col-6">
 
-            <form action="/upload_pod" method="post">
+            <form action="/upload_pod" onsubmit="handleSubmit(this)" method="post">
             {% csrf_token %}
             <input type="amount" name="amount" value="{{amount}}" hidden id="">
             <input type="text" name="reference" value="{{reference}}" hidden id="">
@@ -85,7 +85,15 @@
           </form>     
         </div>
           </div>
-         
+
+    <script>
+      function handleSubmit(form) {
+        const btn = form.querySelector('button[type="submit"]')
+        btn.disabled = true
+        btn.innerText = 'Please wait...'
+      }
+    </script>
+
         </div>
       </div>
     </div>

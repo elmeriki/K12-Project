@@ -10,7 +10,7 @@ class Account(models.Model):
     memberBalance=  models.DecimalField(max_digits=11,decimal_places=2,default=0,blank=True,null=True)
     troubleFundsBalance=  models.DecimalField(max_digits=11,decimal_places=2,default=0,blank=True,null=True)
     mainAccountBalance=  models.DecimalField(max_digits=11,decimal_places=2,default=0,blank=True,null=True)
-    donationAccountBalance=  models.DecimalField(max_digits=11,decimal_places=2,default=0,blank=True,null=True)
+    registrationAmount=  models.DecimalField(max_digits=11,decimal_places=2,default=0,blank=True,null=True)
     accountNumber = models.CharField(max_length=200,default=0,null=True,blank=True)
     created_at = models.DateField(auto_now_add=True)
     updated_at = models.DateField(auto_now=True)
@@ -31,3 +31,30 @@ class Transaction(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     
+
+class Donation(models.Model):
+    member = models.ForeignKey(User,on_delete=models.CASCADE,null=True,blank=True)
+    donationType = models.CharField(max_length=250,default="0",null=True,blank=True)
+    description = models.CharField(max_length=250,default="0",null=True,blank=True)
+    donationStatus = models.CharField(max_length=250,default="0",null=True,blank=True)
+    totalDonationAmount=models.DecimalField(max_digits=11,decimal_places=0,default=0,blank=True,null=True)
+    minDonationAmount=models.DecimalField(max_digits=11,decimal_places=0,default=0,blank=True,null=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    
+
+class DonationTransaction(models.Model):
+    member = models.ForeignKey(User,on_delete=models.CASCADE,null=True,blank=True)
+    donation = models.ForeignKey(Donation,on_delete=models.CASCADE,null=True,blank=True)
+    amount=models.DecimalField(max_digits=11,decimal_places=0,default=0,blank=True,null=True)
+    reference = models.CharField(max_length=250,default="0",null=True,blank=True)
+    donationStatus = models.CharField(max_length=250,default="0",null=True,blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+
+class PreferenceDate(models.Model):
+    member = models.ForeignKey(User,on_delete=models.CASCADE,null=True,blank=True)
+    preferenceStatus = models.CharField(max_length=250,default="0",null=True,blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)

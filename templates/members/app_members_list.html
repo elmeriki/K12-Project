@@ -16,11 +16,16 @@
     <div id="appCapsule">
        <!-- Transactions -->
         <div class="section mt-2">
-            <div class="section-title">Member List</div>
+            <div class="section-title">MEMBERS LIST</div>
             <div class="transactions">
+                {% if members_instance %}
                 {% for eachMember in members_instance %}
                 <!-- item -->
+                {% if request.user.is_admin %}
                 <a href="/activate_account/{{eachMember.username}}" class="item">
+                {% else %}
+                <a href="/member_details/{{eachMember.username}}" class="item">
+                {% endif %}
                     <div class="detail">
                         <img src="{% static 'assets/img/photo.png'  %}" alt="img" class="image-block imaged w48">
                         <div>
@@ -44,7 +49,10 @@
                 </a>
                 <!-- * item -->
                 {% endfor %}
-   
+
+                {% else %}
+                    <p>There are no pending member accounts to be activated.</p>
+                {% endif %}
             </div>
         </div>
         <!-- * Transactions -->

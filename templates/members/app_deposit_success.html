@@ -11,11 +11,11 @@
 
     <!-- App Header -->
     <div class="appHeader">
-        <div class="left">
+        {% comment %} <div class="left">
             <a href="#" class="headerButton goBack">
                 <ion-icon name="home-outline"></ion-icon>
             </a>
-        </div>
+        </div> {% endcomment %}
         <div class="pageTitle">
             Deposit Confirmation
         </div>
@@ -27,26 +27,6 @@
     </div>
     <!-- * App Header -->
 
-    <!-- Dialog Basic -->
-    <div class="modal fade dialogbox" id="DialogBasic" data-bs-backdrop="static" tabindex="-1" role="dialog">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Delete Notification</h5>
-                </div>
-                <div class="modal-body">
-                    Are you sure?
-                </div>
-                <div class="modal-footer">
-                    <div class="btn-inline">
-                        <a href="#" class="btn btn-text-secondary" data-bs-dismiss="modal">CANCEL</a>
-                        <a href="#" class="btn btn-text-primary" data-bs-dismiss="modal">DELETE</a>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <!-- * Dialog Basic -->
 
     <!-- App Capsule -->
     <div id="appCapsule" class="full-height">
@@ -56,7 +36,7 @@
             <div class="listed-detail mt-3">
                 <div class="icon-wrapper">
                     <div class="iconbox">
-                        <ion-icon name="arrow-down-outline"></ion-icon>
+                       <ion-icon name="checkmark-circle"></ion-icon>
                     </div>
                 </div>
                 <h3 class="text-center mt-2">POD Uploaded Successfuly</h3>
@@ -65,19 +45,19 @@
             <ul class="listview simple-listview no-space mt-3">
                 <li>
                     <span>Status</span>
-                    <strong>{{transactionStatus}}</strong>
+                    <strong>Initiated</strong>
                 </li>
                 <li>
                     <span>Momo Number</span>
-                    <strong>650065762</strong>
+                    <strong>677398252</strong>
                 </li>
                   <li>
                     <span>Momo Name</span>
-                    <strong>Kontriman Coop</strong>
+                    <strong>Kontriman</strong>
                 </li>
                 <li>
                     <span>Date</span>
-                    <strong>{{currentDate}}</strong>
+                    <strong>{% now "Y-m-d" %}</strong>
                 </li>
                 <li>
                     <span>Amount</span>
@@ -89,8 +69,8 @@
                 </li>
             </ul>
             <br><br><br>
-        <a href="/members_dashboard" class="btn btn-primary btn-block btn-lg">
-            Verify
+        <a href="/members_dashboard" class="btn btn-success btn-block btn-lg">
+            Finish
         </a>
         </div>
     </div>

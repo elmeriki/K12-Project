@@ -11,9 +11,11 @@
 
     <!-- App Header -->
     <div class="appHeader no-border transparent position-absolute">
-      {% comment %} <div class="left">
-        <a href="/" class="headerButton goBack"><ion-icon name="home-outline"></ion-icon></a>
-      </div> {% endcomment %}
+      <div class="left">
+        <a href="/" class="headerButton goBack">
+         <ion-icon name="wallet-outline"></ion-icon>
+        </a>
+      </div> 
       <div class="pageTitle"></div>
       <div class="right">
         <a href="/login" class="headerButton">Login</a>
@@ -29,7 +31,7 @@
       </div>
 
       <div class="section mb-5 p-2">
-        <form action="/register_a_member" id="registerForm" method="post" onsubmit="submutbutton.disabled = true; return true;" autocomplete="off">
+        <form action="/register_a_member" id="registerForm" method="post" onsubmit="handleSubmit(this)" autocomplete="off">
           {% csrf_token %}
           <div class="card">
             <div class="card-body">
@@ -81,7 +83,7 @@
           <br />
           {% if messages %}
             {% for message in messages %}
-              <div class="alert alert-primary alert-dismissible fade show" role="alert">
+              <div class="alert alert-danger alert-dismissible fade show" role="alert">
                 <strong>{{ message }}</strong>
                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
               </div>
@@ -91,9 +93,16 @@
           {% endif %}
 
           <div class="form-button-group transparent">
-            <button type="submit" name="submutbutton" class="btn btn-primary btn-block btn-lg">Register</button>
+            <button type="submit" name="submutbutton" class="btn btn-primary btn-block btn-lg">REGISTER</button>
           </div>
         </form>
+        <script>
+          function handleSubmit(form) {
+            const btn = form.querySelector('button[type="submit"]')
+            btn.disabled = true
+            btn.innerText = 'Please wait...'
+          }
+        </script>
       </div>
     </div>
     <!-- * App Capsule -->

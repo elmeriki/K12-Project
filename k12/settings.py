@@ -15,6 +15,7 @@ DEBUG = True
 
 ALLOWED_HOSTS = ["*"]
 
+MAIN_GROUP_NUMBER = "650065763"
 
 # Application definition
 
@@ -147,8 +148,7 @@ DEFAULT_AUTO_FIELD='django.db.models.AutoField'
 # STATIC_ROOT = '/home/username/k12.com/static'
 
 
+SESSION_EXPIRE_AT_BROWSER_CLOSE=True 
+SESSION_COOKIE_AGE = 100000                   
+SESSION_SAVE_EVERY_REQUEST =True     
 
-
-# 'var1 in Class.__dict__
-
-# var

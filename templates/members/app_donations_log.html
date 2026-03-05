@@ -1,0 +1,59 @@
+{% load static %}
+<!doctype html>
+<html lang="en">
+{% include "../ext/header.html" %}
+<body>
+
+    <!-- loader -->
+    {% comment %} <div id="loader">
+        <img src="assets/img/loading-icon.png" alt="icon" class="loading-icon">
+    </div> {% endcomment %}
+    <!-- * loader -->
+
+    <!-- * App Header -->
+    {% include "members/app_header.html" %}
+    <!-- * App Header -->
+
+    <!-- App Capsule -->
+<div>
+    <div id="appCapsule">
+        <div class="section full">
+            {% if transaction %}
+            <ul class="listview image-listview flush">
+                {% for eachTransaction in transaction %}
+                <li class="active">
+                    <a href="#" class="item">
+                        <div class="icon-box bg-success">
+                            <ion-icon name="arrow-down-outline"></ion-icon>
+                        </div>
+                        <div class="in">
+                            <div>
+                                <div class="mb-05"><strong>{{eachTransaction.transactionType}}</strong></div>
+                                <div class="text-small mb-05">{{eachTransaction.member.first_name}} Donated <b>{{eachTransaction.amount}}XAF</b></div>
+                                <div class="text-xsmall">{{eachTransaction.created_at.date}}</div>
+                            </div>
+                        </div>
+                    </a>
+                </li>
+                {% endfor %}
+            </ul>
+            {% else %}
+            <br><br>
+            <center><p>There are no Donation log to display at the moment.</p></center>
+            {% endif %}
+        </div>
+</div>
+    <!-- * App Capsule -->
+
+
+    <!-- App Bottom Menu -->
+    {% include "members/app_buttom_menu.html" %}
+    {% include "members/app_modals.html" %}
+    <!-- App Bottom Menu -->
+
+
+{% include "../ext/footer.html" %}
+
+</body>
+
+</html>

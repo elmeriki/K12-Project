@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+  {% include '../ext/header.html' %}
+
+  <body class="bg-white">
+    <!-- loader -->
+    {% include 'members/app_loader.html' %}
+    <!-- * loader -->
+
+    <!-- App Header -->
+    <div class="appHeader">
+      {% comment %} <div class="left">
+        <a href="#" class="headerButton goBack"><ion-icon name="home-outline"></ion-icon></a>
+      </div> {% endcomment %}
+      <div class="pageTitle">Payment SUCCESSFUL</div>
+      <div class="right">
+        <a href="#" class="headerButton"><ion-icon name="checkmark-circle-outline"></ion-icon></a>
+      </div>
+    </div>
+    <!-- * App Header -->
+
+    <!-- App Capsule -->
+    <div id="appCapsule" class="full-height">
+      <div class="section">
+        <div class="listed-detail mt-3">
+          <div class="icon-wrapper">
+            <div class="iconbox">
+              <ion-icon name="checkmark-circle"></ion-icon>
+            </div>
+          </div>
+          <h3 class="text-center mt-2">SUCCESSFUL</h3>
+        </div>
+
+        <ul class="listview simple-listview no-space mt-3">
+          <li>
+            <span>Senders Name</span>
+            <strong>{{sendingInstance.first_name}}</strong>
+          </li>
+          <li>
+            <span>Senders Phone</span>
+            <strong>{{sendingInstance.username}}</strong>
+          </li>
+          <li>
+            <span>Amount</span>
+            <strong>{{RecieverInstance.amount}} XAF</strong>
+          </li>
+          <li>
+            <span>Reciever Names</span>
+            <strong>{{RecieverInstance.first_name}}</strong>
+          </li>
+          <li>
+            <span>Date</span>
+            <strong>{{RecieverInstance.created_at.date}}</strong>
+          </li>
+          <li>
+            <span>Reference</span>
+            <strong>Transfer</strong>
+          </li>
+        </ul>
+        <br /><br /><br />
+        <a href="/members_dashboard" class="btn btn-primary btn-block btn-lg">FINISH</a>
+      </div>
+    </div>
+    <!-- * App Capsule -->
+
+    <!-- App Bottom Menu -->
+    {% include 'members/app_buttom_menu.html' %}
+    {% include 'members/app_modals.html' %}
+
+    <!-- App Bottom Menu -->
+
+    {% include '../ext/footer.html' %}
+  </body>
+</html>

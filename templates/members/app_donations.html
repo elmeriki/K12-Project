@@ -1,0 +1,69 @@
+{% load static %}
+<!doctype html>
+<html lang="en">
+{% include "../ext/header.html" %}
+<body>
+
+   <!-- loader -->
+        {% include "members/app_loader.html" %}
+    <!-- * loader -->
+
+    <!-- * App Header -->
+    {% include "members/app_header.html" %}
+    <!-- * App Header -->
+
+    <!-- App Capsule -->
+    <div id="appCapsule">
+       <!-- Transactions -->
+        <div class="section mt-2">
+            <div class="section-title">DONATION LIST</div>
+            <div class="transactions">
+                {% if donations_list %}
+                {% for eachDonation in donations_list %}
+                <!-- item -->
+                <a href="/verify_donation_confirmation/{{eachDonation.id}}" class="item">
+                    <div class="detail">
+                        <img src="{% static 'assets/img/photo.png'  %}" alt="img" class="image-block imaged w48">
+                        <div>
+                            <strong>{{eachDonation.member.first_name | upper}}</strong>
+                            <p>GROSS AMOUNT DONATED: <span class="text-danger">{{eachDonation.totalDonationAmount}} XAF</span> </p>
+                            
+                        </div>
+                    </div>
+                    <div class="right">
+                    {% if eachDonation.donationStatus == "Completed" %}
+                      <div class="price text-success">
+                        <ion-icon name="add-circle" style="font-size: 40px;"></ion-icon>
+                    </div>   
+                    {% else %}
+                        <div class="price text-primary">
+                        <ion-icon name="add-circle" style="font-size: 40px;"></ion-icon>
+                    </div>
+                    {% endif %}  
+
+                    </div>
+                </a>
+                <!-- * item -->
+                {% endfor %}
+
+                {% else %}
+                    <p> There are no donations available to contribute at the moment.</p>
+                {% endif %}
+            </div>
+        </div>
+        <!-- * Transactions -->
+    </div>
+    <!-- * App Capsule -->
+
+
+    <!-- App Bottom Menu -->
+    {% include "members/app_buttom_menu.html" %}
+    <!-- App Bottom Menu -->
+    {% include "members/app_modals.html" %}
+
+
+{% include "../ext/footer.html" %}
+
+</body>
+
+</html>

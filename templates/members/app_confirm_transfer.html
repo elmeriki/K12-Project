@@ -1,0 +1,160 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+  <!-- * App Header -->
+  {% include '../ext/header.html' %}
+  <!-- * App Header -->
+
+  <body class="bg-white">
+    <!-- loader -->
+    {% comment %} {% include 'members/app_loader.html' %} {% endcomment %}
+    <!-- * loader -->
+
+    <!-- App Header -->
+    <div class="appHeader no-border">
+      <div class="left">
+        <a href="#" class="headerButton goBack"><ion-icon name="chevron-back-outline"></ion-icon></a>
+      </div>
+      <div class="pageTitle">Verify Payment</div>
+      <div class="right"></div>
+    </div>
+    <!-- * App Header -->
+
+    <!-- App Capsule -->
+    <div id="appCapsule">
+      <div class="section">
+        <div class="splash-page mt-5 mb-5">
+          <div class="transfer-verification">
+            <div class="transfer-amount">
+              <span class="caption">Amount</span>
+              <h2>{{ amount }} XAF</h2>
+            </div>
+            <div class="from-to-block mb-5">
+              <div class="item text-start">
+                <ion-icon name="wallet-outline" style="font-size: 48px;"></ion-icon>
+                <strong>{{ sendingInstance.first_name }}</strong>
+              </div>
+              <div class="item text-end">
+                <ion-icon name="person-outline" style="font-size: 48px;"></ion-icon>
+                <strong>{{ RecieveInstance.first_name }}</strong>
+              </div>
+              <div class="arrow"></div>
+            </div>
+          </div>
+          {% comment %} <h2 class="mb-2 mt-2">Process Payment</h2> {% endcomment %}
+          <p>
+            You are about to transfer {{ amount }} XAF to {{ RecieveInstance.first_name }}’s account from your K12 Savings account.
+            <br />
+            Please carefully verify the recipient’s name and phone number before confirming the payment.
+          </p>
+        </div>
+      </div>
+      <!-- App Capsule -->
+      <div id="appCapsule" class="full-height">
+        <div class="section">
+          <ul class="listview simple-listview no-space mt-3">
+            <li>
+              <span>Recievers Name</span>
+              <strong>{{ RecieveInstance.first_name }} {{ RecieveInstance.last_name }}</strong>
+            </li>
+            <li>
+              <span>Members Username</span>
+              <strong>{{ RecieveInstance.username }}</strong>
+            </li>
+            <li>
+              <span>Amount</span>
+              <strong>{{ amount }} XAF</strong>
+            </li>
+            <li>
+              <span>Reference</span>
+              <strong>Transfer</strong>
+            </li>
+          </ul>
+        </div>
+        <br /><br /><br />
+
+        
+        <div class="container">
+          <div class="row">
+            <div class="col-6">
+              <a href="/members_dashboard" class="btn btn-lg btn-outline-secondary btn-block">Cancel</a>
+            </div>
+            <div class="col-6">
+              <form id="transferForm" action="/finalise_transfer" method="post">
+                {% csrf_token %}
+                <input type="number" name="amount" value="{{ amount }}" hidden />
+                <input type="text" name="username" value="{{ RecieveInstance.username }}" hidden />
+
+                <button type="button" class="btn btn-lg btn-primary btn-block" data-bs-toggle="modal" data-bs-target="#DialogBasic">Confirm</button>
+              </form>
+            </div>
+          </div>
+          {% if messages %}
+            {% for message in messages %}
+              <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                <strong>{{ message }}</strong>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+              </div>
+            {% endfor %}
+          {% else %}
+
+          {% endif %}
+          <script>
+            function handleSubmit(form) {
+              const btn = form.querySelector('button[type="submit"]')
+              btn.disabled = true
+              btn.innerText = 'Processing ...'
+            }
+          </script>
+        </div>
+      </div>
+    </div>
+
+
+    <!-- Modal Box to confirm payment -->
+<div class="modal fade dialogbox" id="DialogBasic" data-bs-backdrop="static" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            
+            <div class="modal-header">
+                <h5 class="modal-title">Confirm Transfer</h5>
+            </div>
+
+            <div class="modal-body">
+                Are you sure you want to complete this transfer?
+            </div>
+
+            <div class="modal-footer">
+                <div class="btn-inline">
+                    <button class="btn btn-text-secondary" data-bs-dismiss="modal">
+                        Cancel
+                    </button>
+
+                    <button class="btn btn-text-primary" onclick="submitTransfer()">
+                        Confirm
+                    </button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+    <!-- Modal Box to confirm payment -->
+
+  
+<!-- Submit Button JS code -->
+<script>
+function submitTransfer() {
+    document.getElementById("transferForm").submit();
+}
+</script>
+<!-- Submit Button JS code -->
+
+    <!-- App Bottom Menu -->
+    {% include 'members/app_buttom_menu.html' %}
+    <!-- App Bottom Menu -->
+    {% include 'members/app_modals.html' %}
+
+    {% include '../ext/footer.html' %}
+  </body>
+</html>

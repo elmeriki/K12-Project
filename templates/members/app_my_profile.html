@@ -79,13 +79,17 @@
 
         <div class="listview-title mt-1">Security</div>
         <ul class="listview image-listview text mb-2 inset">
-            <li>
+            {% if request.user.is_admin %}
+
+            {% else %}
+                <li>
                 <a href="/reset_pin" class="item">
                     <div class="in text-danger">
                         <div>Change PIN</div>
                     </div>
                 </a>
             </li>
+            {% endif %}
             <li>
                 <a href="/member_logout" class="item">
                     <div class="in">

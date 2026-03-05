@@ -2,7 +2,7 @@ from django.shortcuts import render,redirect
 from django.http.response import JsonResponse
 from django.http import HttpResponse
 from django.http import HttpResponse,HttpResponseRedirect
-from django.contrib.auth.models import User,auth
+from django.contrib.auth.models import User ,auth
 from django.contrib import  messages
 from django.contrib.auth.decorators import login_required
 from django.core.mail import EmailMultiAlternatives
@@ -14,38 +14,50 @@ import datetime
 from datetime import date
 from django.db import transaction
 import threading
-from k12auth.models import *
+from k12auth.models import User
 from members.models import *
 
 def welcome(request):
-    return render(request,'index.html',{})
+    if request.user.is_authenticated:
+        return redirect('/members_dashboard')
+    else:
+        return render(request,'index.html',{})
 
 
 def user_login(request):
-    return render(request,'auth/login.html',{})
-
+    if request.user.is_authenticated:
+        return redirect('/members_dashboard')
+    else:
+        return render(request,'auth/login.html')
 
 
 def user_registrattion(request):
-    return render(request,'auth/register.html',{})
+    if request.user.is_authenticated:
+        return redirect('/members_dashboard')
+    else:
+        return render(request,'auth/register.html',{})
 
 @login_required
 def member_dashboard(request):
     members_instance=User.objects.filter( Q(is_member=True,is_staff=False) | Q(is_member=False,is_staff=False) )
     username = request.user.username
-    select_members_instance=User.objects.get(username=username)
-    mainAccountBalance = Account.objects.filter(member=select_members_instance).aggregate(total=Sum('mainAccountBalance') )['total'] or 0
-    membersBalance = Account.objects.filter(member=select_members_instance).aggregate(total=Sum('memberBalance') )['total'] or 0
-    troubleFundsBalance = Account.objects.filter(member=select_members_instance).aggregate(total=Sum('troubleFundsBalance') )['total'] or 0
-    donationAccountBalance = Account.objects.filter(member=select_members_instance).aggregate(total=Sum('donationAccountBalance') )['total'] or 0
-    transaction_log = Transaction.objects.filter(member=select_members_instance).order_by('-created_at')[:6]
+    mainUserInstance = User.objects.get(username="650065763")
+    select_members_instance=User.objects.get(username=username)        
+    mainAccountBalance = Account.objects.filter(member=mainUserInstance).values_list('mainAccountBalance', flat=True).first() 
+    membersBalance = Account.objects.filter(member=select_members_instance).values_list('memberBalance',flat=True).first()
+    troubleFundsBalance = Account.objects.filter(member=mainUserInstance).values_list('troubleFundsBalance',flat=True).first()
+    groupRegistrationAmount = Account.objects.filter(member=select_members_instance).values_list('registrationAmount',flat=True).first()
+    transaction_log = Transaction.objects.filter(member=select_members_instance).order_by('-created_at')[:5]
+    toBeReconcileTransaction = Transaction.objects.filter(transactionStatus="Initiated").order_by('-created_at')[:10]
+
     data = {
         'members_instance':members_instance,
         'mainAccountBalance':mainAccountBalance,
         'membersBalance':membersBalance,
         'troubleFundsBalance':troubleFundsBalance,
-        'donationAccountBalance':donationAccountBalance,
-        'transaction_log':transaction_log
+        'groupRegistrationAmount':groupRegistrationAmount,
+        'transaction_log':transaction_log,
+        'toBeReconcileTransaction':toBeReconcileTransaction
     }    
     return render(request,'members/dashboard.html',context=data)
 
@@ -94,13 +106,13 @@ def register_a_memberView(request):
             create_new_members_account = Account(member=create_new_member_account,accountNumber=phone)
             create_new_members_account.save()
             
-            messages.info(request,"Customer account has been created successfully")
+            messages.info(request,"Account created! Verification is pending before it becomes active")
             return redirect('/register')
         else:
-            messages.info(request,"Account could not be created successfully")
+            messages.info(request,"Account could not be created successfully. Please try again.")
             return redirect('/register')
     else:
-        messages.info(request,"Enter valid data")
+        messages.info(request,"Invalid input. Please check and try again.")
         return redirect('/register')
     
     
