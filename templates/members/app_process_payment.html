@@ -6,8 +6,8 @@
   <!-- * App Header -->
 
   <body class="bg-white">
-   <!-- loader -->
-        {% comment %} {% include "members/app_loader.html" %} {% endcomment %}
+    <!-- loader -->
+    {% comment %} {% include 'members/app_loader.html' %} {% endcomment %}
     <!-- * loader -->
 
     <!-- App Header -->
@@ -43,57 +43,57 @@
           </div>
           {% comment %} <h2 class="mb-2 mt-2">Process Payment</h2> {% endcomment %}
           <p>
-            You are about to save <strong class="text-primary">{{amount}} XAF</strong> Into <strong>K12</strong> savings account <br />
-            Use the MoMo details below to make your payment. After payment, upload the screenshot for verification. The amount must match the proof of payment.
-            <br><br>
-         <span class="text-danger">Payments will remain pending until verified and approved. Submitting more than one transaction with the same screenshot will be treated as fraud and may result in penalties from the group.</span>
-        </p>
+            You are about to save <strong class="text-primary">{{ amount }} XAF</strong> Into <strong>K12</strong> savings account. <br />
+            Select MTN or Orange below, and the dial pad will open automatically with the corresponding amount you intend to save
+            <br /><br />
+            <span class="text-danger">Payments will remain pending until verified and approved. Submitting more than one transaction with the same screenshot will be treated as fraud and may result in penalties from the group.</span>
+          </p>
         </div>
       </div>
       <!-- App Capsule -->
-      <div id="appCapsule" class="full-height">
-        <div class="section">
-          <ul class="listview simple-listview no-space mt-3">
-            <li>
-              <span>Momo Name</span>
-              <strong>Kontriman Coop</strong>
-            </li>
-            <li>
-              <span>Momo Number</span>
-              <strong>650065763</strong>
-            </li>
-            <li>
-              <span>OR</span>
-              <strong>*126*14*650065763*{{amount}}#</strong>
-            </li>
-     
-          </ul>
-        </div>
-        <br /><br /><br />
-        <div class="container">
-          <div class="row">
-            <div class="col-6">
-              <a href="/members_dashboard" class="btn btn-lg btn-outline-secondary btn-block">Close</a>
-            </div>
-            <div class="col-6">
-
-            <form action="/upload_pod" onsubmit="handleSubmit(this)" method="post">
-            {% csrf_token %}
-            <input type="amount" name="amount" value="{{amount}}" hidden id="">
-            <input type="text" name="reference" value="{{reference}}" hidden id="">
-            <input type="submit" class="btn btn-lg btn-primary btn-block" value="Upload Pod">
-          </form>     
-        </div>
+      <div class="section">
+        <ul class="listview simple-listview no-space mt-3">
+          <li>
+            <span>BANK NAME</span>
+            <strong>Kontriman Coop</strong>
+          </li>
+          <li>
+            <span>MTN Momo Float Number</span>
+            <strong>650065763</strong>
+          </li>
+          <li>
+            <span>MTN MOMO PAYMENT</span>
+            <a href="tel:*126*14*677398252*{{ amount }}%23" class="btn btn-danger">PAY WITH MTN</a>
+          </li>
+          <li>
+            <span>ORANGE MONEY PAYMENT</span>
+            <a href="tel:%23150*47*815752*{{ amount }}%23" class="btn btn-warning">PAY WITH ORANGE</a>
+          </li>
+        </ul>
+      </div>
+      <br /><br /><br />
+      <div class="container">
+        <div class="row">
+          <div class="col-6">
+            <a href="/members_dashboard" class="btn btn-lg btn-outline-secondary btn-block">Close</a>
           </div>
-
-    <script>
-      function handleSubmit(form) {
-        const btn = form.querySelector('button[type="submit"]')
-        btn.disabled = true
-        btn.innerText = 'Please wait...'
-      }
-    </script>
-
+          <div class="col-6">
+            <form action="/upload_pod" onsubmit="handleSubmit(this)" method="post">
+              {% csrf_token %}
+              <input type="amount" name="amount" value="{{ amount }}" hidden id="" />
+              <input type="text" name="reference" value="{{ reference }}" hidden id="" />
+              <input type="submit" class="btn btn-lg btn-primary btn-block" value="Upload Pod" />
+            </form>
+             <br><br>
+          </div>
+         
+          <script>
+            function handleSubmit(form) {
+              const btn = form.querySelector('button[type="submit"]')
+              btn.disabled = true
+              btn.innerText = 'Please wait...'
+            }
+          </script>
         </div>
       </div>
     </div>

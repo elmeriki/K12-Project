@@ -23,6 +23,7 @@ import os
 from members.models import *
 from django.conf import settings
 from django.db.models import F
+from decimal import Decimal
 
 
 def app_settingView(request):
@@ -72,7 +73,32 @@ def transactionsView(request):
     else:
         return redirect('/login')
     
+
+
+def donation_withdrawalView(request):
+    if request.user.is_authenticated:
+        username = request.user.username
+        members_instance=User.objects.get(username=username)
+        withdrawal_transaction = DonationWithdrawal.objects.filter(member=members_instance)
+        data = {
+            'withdrawal_transaction':withdrawal_transaction
+        }
+        return render(request,'members/withdrawal_log.html',context=data)
+    else:
+        return redirect('/login')
     
+    
+def process_donation_withdrawalView(request):
+    if request.user.is_authenticated:
+        withdrawal_transaction = DonationWithdrawal.objects.filter(donationStatus="Pending").order_by('-created_at')[:20]
+        data = {
+            'withdrawal_transaction':withdrawal_transaction
+        }
+        return render(request,'members/withdrawal_log.html',context=data)
+    else:
+        return redirect('/login')
+    
+@login_required
 def donations_logView(request,donationId):
     if request.user.is_authenticated:
         donationInstance=Donation.objects.get(id=donationId)
@@ -84,7 +110,7 @@ def donations_logView(request,donationId):
     else:
         return redirect('/login')
     
-
+@login_required
 def incoming_paymentView(request):
     if request.user.is_authenticated and request.user.is_admin:
         transaction = Transaction.objects.filter(transactionStatus="Verified")[:10]
@@ -94,7 +120,21 @@ def incoming_paymentView(request):
         return render(request,'members/app_incoming_payment.html',context=data)
     else:
         return redirect('/login')
-
+    
+    
+@login_required
+def withdrawalsView(request):
+    if request.user.is_authenticated and request.user.is_admin:
+        withdrawals = Withdrawal.objects.order_by('-created_at')[:10]
+        data = {
+            'withdrawals':withdrawals
+        }
+        return render(request,'members/app_withdrawal.html',context=data)
+    else:
+        return redirect('/login')
+    
+    
+@login_required
 def payment_successfulView(request,amount,transactionReference):
     if request.user.is_authenticated:
         username = request.user.username
@@ -107,7 +147,8 @@ def payment_successfulView(request,amount,transactionReference):
         return render(request,'members/app_deposit_success.html',context=data)
     else:
         return redirect('/login')
-    
+
+@login_required
 def transfer_successfulView(request,transactionId):
     if request.user.is_authenticated:
         username = request.user.username
@@ -120,6 +161,31 @@ def transfer_successfulView(request,transactionId):
         return redirect('/login')
     
     
+@login_required
+def donation_withdrawal_successfulView(request,withdrawalID):
+    if request.user.is_authenticated:
+        donation_withdrawal_transaction=DonationWithdrawal.objects.get(id=withdrawalID)
+        data = {
+            'donation_withdrawal_transaction':donation_withdrawal_transaction,
+        }
+        return render(request,'members/app_donation_withdrawal_confirmation.html',context=data)
+    else:
+        return redirect('/login')
+    
+    
+@login_required
+def withdrawal_successful_confirmationView(request,withdrawalID):
+    if request.user.is_authenticated:
+        withdrawal_transaction=Withdrawal.objects.get(id=withdrawalID)
+        data = {
+            'withdrawal_transaction':withdrawal_transaction,
+        }
+        return render(request,'members/app_withdrawal_confirmation.html',context=data)
+    else:
+        return redirect('/login')
+    
+    
+@login_required
 def saving_successfulView(request,transactionId):
     if request.user.is_authenticated:
         selectedSucessfulTransaction=Transaction.objects.get(id=transactionId)
@@ -130,7 +196,7 @@ def saving_successfulView(request,transactionId):
     else:
         return redirect('/login')
     
-    
+@login_required
 def saving_unsuccessfulView(request,transactionId):
     if request.user.is_authenticated:
         selectedSucessfulTransaction=Transaction.objects.get(id=transactionId)
@@ -153,7 +219,19 @@ def transactions_detailsView(request,transactionid):
         return render(request,'members/transaction_detail.html',context=data)
     else:
         return redirect('/login')
-    
+
+def withdrawal_detailsView(request,withdrawalID):
+    if request.user.is_authenticated:
+        username = request.user.username
+        members_instance=User.objects.get(username=username)
+        select_transaction = Withdrawal.objects.get(id=withdrawalID)
+        data = {
+            'members_instance':members_instance,
+            'select_withdrawal':select_transaction
+        }
+        return render(request,'members/withdrawal_detail.html',context=data)
+    else:
+        return redirect('/login')
     
 def activate_accountView(request,select_username):
     if request.user.is_authenticated:
@@ -207,6 +285,39 @@ def activate_member_accountView(request):
         messages.info(request,"Activation process could not be completed")
         return redirect(f'/activate_account/{username}')
     
+    
+@transaction.atomic
+def transfer_donation_View(request):
+    if request.user.is_authenticated and request.method == "POST" and request.POST['selectedDonation'] and request.POST['momoNumber'] and request.POST['momoName'] and request.POST['with_amount']:
+        selectedDonationID=request.POST['selectedDonation']
+        momoNumber=request.POST['momoNumber']
+        momoName=str(request.POST['momoName'])
+        with_amount=int(request.POST['with_amount'])
+        username_instance = request.user
+        donationInstance = Donation.objects.get(id=selectedDonationID)
+        selectedTotalDonationAmount = Donation.objects.get(id=selectedDonationID).totalDonationAmount
+        if with_amount > selectedTotalDonationAmount:
+            messages.info(request,"Request amount is bigger than donation amount")
+            return redirect(f'/transfer_donation/{selectedDonationID}')  
+        
+        if with_amount <= selectedTotalDonationAmount:
+            
+            newSelectedTotalDonationAmount = Donation.objects.get(id=selectedDonationID).totalDonationAmount - with_amount
+            updateDonationAccount = Donation.objects.get(id=selectedDonationID)
+            updateDonationAccount.totalDonationAmount = newSelectedTotalDonationAmount
+            updateDonationAccount.save()
+            
+            save_new_donation_withdrawal = DonationWithdrawal(member=username_instance,donation=donationInstance,amount=with_amount,momoName=momoName,momoNumber=momoNumber,donationStatus="Pending")
+            save_new_donation_withdrawal.save()
+            withdrawalID = save_new_donation_withdrawal.id
+            return redirect(f'/donation_withdrawal_sucessful/{withdrawalID}')  
+        
+        if with_amount < 0:
+            messages.info(request,"Enter a valid donation amount bigger than zero")
+            return redirect(f'/transfer_donation/{selectedDonationID}')  
+    else:
+        messages.info(request,"Something went wrong during withdrawal process")
+        return redirect('/transfer_donation/{selectedDonationID}')
     
     
 @transaction.atomic
@@ -496,6 +607,146 @@ def submit_transactionView(request):
     return redirect(f'/payment_successful/{amount}/{reference}')
     
     
+@transaction.atomic
+def final_donation_withdrawalView(request):
+    if not (request.user.is_authenticated and request.user.is_admin and request.method == "POST"):
+        messages.info(request, "Uploading POD could not be completed, Please try again")
+        return redirect('/upload_pod')
+    donation_id =  request.POST.get('donation_id')
+    donation_title = request.POST.get('donation_title')
+    withdrawal_amount = int(request.POST.get('withdrawal_amount', 0))
+    reciever_username = request.POST.get('reciever_username')
+    pop = request.FILES.get('pop')
+
+    if not pop:
+        messages.info(request, "Uploading POP could not be completed, Please try again")
+        return redirect('/donation_withdrawal_sucessful/{donation_id}')
+
+    # Validate extension
+    allowed_extensions = ['.png', '.jpg', '.jpeg']
+    ext = os.path.splitext(pop.name)[1].lower()
+
+    if ext not in allowed_extensions:
+        messages.info(request, "Only PNG, JPG, and JPEG files are allowed.")
+        return redirect('/donation_withdrawal_sucessful/{donation_id}')
+
+    image = Image.open(pop)
+
+    if image.mode in ("RGBA", "P"):
+        image = image.convert("RGB")
+
+    max_size = (800, 800)
+    image.thumbnail(max_size)
+
+    buffer = BytesIO()
+    image.save(buffer, format="JPEG", quality=60, optimize=True)
+
+    file_name = f"transactions/{donation_title}_{reciever_username}.jpg"
+    file_path = default_storage.save(file_name, ContentFile(buffer.getvalue()))
+
+    groupMainAccountBalance = Account.objects.get(member=User.objects.get(username=settings.MAIN_GROUP_NUMBER)).mainAccountBalance
+    newMainGroupAccountBalance = groupMainAccountBalance - withdrawal_amount
+    
+    membersSavingsBalance = Account.objects.get(member=User.objects.get(username=reciever_username)).memberBalance
+    newMembersSavingsBalance = membersSavingsBalance - withdrawal_amount
+    
+    updateMainAccountInstance = Account.objects.get(member=User.objects.get(username=settings.MAIN_GROUP_NUMBER))
+    updateMainAccountInstance.mainAccountBalance = newMainGroupAccountBalance
+    updateMainAccountInstance.save()
+
+    updateMembersAccountInstance = Account.objects.get(member=User.objects.get(username=reciever_username))
+    updateMembersAccountInstance.memberBalance = newMembersSavingsBalance
+    updateMembersAccountInstance.save()
+    
+    update_withdrawal_request = DonationWithdrawal.objects.get(id=donation_id)
+    update_withdrawal_request.donationStatus = "Completed"
+    update_withdrawal_request.PODs=file_path
+    update_withdrawal_request.save()
+    
+    create_newTransaction = Transaction(member=User.objects.get(username=reciever_username),amount=withdrawal_amount,transactionType="Donx Withdrawal",transactionReference="Donx Withdrawal",transactionStatus="Successful",PODs=file_path)
+    create_newTransaction.save()
+    
+    return redirect(f'/donation_withdrawal_successful_confirmation/{donation_id}')
+
+
+
+@transaction.atomic
+def finalise_withdrawalView(request):
+    if not (request.user.is_authenticated and request.user.is_admin and request.method == "POST"):
+        messages.info(request, "Uploading POP could not be completed, Please try again")
+        withdrawal_id =  request.POST.get('withdrawal_id')
+        return redirect(f'/process_withdrawal_request/{withdrawal_id}')
+    
+    withdrawal_id =  request.POST.get('withdrawal_id')
+    membersUsername = request.POST.get('membersUsername')
+    recieverMomoName = request.POST.get('recieverMomoName')
+    recieverMomoNumber = request.POST.get('recieverMomoNumber')
+    withdrawal_amount = int(request.POST.get('withdrawal_amount', 0))
+    withdrawalStatus = request.POST.get('withdrawalStatus')
+    decision = request.POST.get('decision')
+    pop = request.FILES.get('pop')
+
+    if not pop:
+        messages.info(request, "Uploading POP could not be completed, Please try again")
+        return redirect('/process_withdrawal_request/{withdrawal_id}')
+
+    
+    # Validate extension
+    allowed_extensions = ['.png', '.jpg', '.jpeg']
+    ext = os.path.splitext(pop.name)[1].lower()
+
+    if ext not in allowed_extensions:
+        messages.info(request, "Only PNG, JPG, and JPEG files are allowed.")
+        return redirect('/process_withdrawal_request/{withdrawal_id}')
+    if decision == "Successful":
+        image = Image.open(pop)
+
+        if image.mode in ("RGBA", "P"):
+            image = image.convert("RGB")
+
+        max_size = (800, 800)
+        image.thumbnail(max_size)
+
+        buffer = BytesIO()
+        image.save(buffer, format="JPEG", quality=60, optimize=True)
+
+        file_name = f"withdrawal/{membersUsername}_{decision}.jpg"
+        file_path = default_storage.save(file_name, ContentFile(buffer.getvalue()))
+
+        groupMainAccountBalance = Account.objects.get(member=User.objects.get(username=settings.MAIN_GROUP_NUMBER)).mainAccountBalance
+        newMainGroupAccountBalance = groupMainAccountBalance - withdrawal_amount
+        
+        membersSavingsBalance = Account.objects.get(member=User.objects.get(username=membersUsername)).memberBalance
+        newMembersSavingsBalance = membersSavingsBalance - withdrawal_amount
+        
+        updateMainAccountInstance = Account.objects.get(member=User.objects.get(username=settings.MAIN_GROUP_NUMBER))
+        updateMainAccountInstance.mainAccountBalance = newMainGroupAccountBalance
+        updateMainAccountInstance.save()
+
+        updateMembersAccountInstance = Account.objects.get(member=User.objects.get(username=membersUsername))
+        updateMembersAccountInstance.memberBalance = newMembersSavingsBalance
+        updateMembersAccountInstance.save()
+        
+        update_withdrawal_request = Withdrawal.objects.get(id=withdrawal_id)
+        update_withdrawal_request.withdrawalStatus = "Successful"
+        update_withdrawal_request.POPs=file_path
+        update_withdrawal_request.save()
+        
+        create_newTransaction = Transaction(member=User.objects.get(username=membersUsername),amount=withdrawal_amount,transactionType="Withdrawal",transactionReference="Withdrawal",transactionStatus="Successful",PODs=file_path)
+        create_newTransaction.save()
+        return redirect(f'/withdrawal_successful_confirmation/{withdrawal_id}')
+    
+    if decision == "Fraud" or decision == "Rejected":
+        update_withdrawal_request = Withdrawal.objects.get(id=withdrawal_id)
+        update_withdrawal_request.withdrawalStatus = decision
+        update_withdrawal_request.POPs=file_path
+        update_withdrawal_request.save()
+        
+        create_newTransaction = Transaction(member=User.objects.get(username=membersUsername),amount=withdrawal_amount,transactionType="Withdrawal",transactionReference="Withdrawal",transactionStatus=decision,PODs=file_path)
+        create_newTransaction.save()
+        return redirect(f'/withdrawal_successful_confirmation/{withdrawal_id}') 
+
+    
 def new_donationView(request):
     if request.user.is_authenticated:
         username = request.user.username
@@ -560,7 +811,15 @@ def verify_donation_confirmationView(request,donationId):
 
     else:
         return render(request,'members/app_donation_confirmation.html',context=data)
-    
+   
+   
+@transaction.atomic
+def close_donationView(request,donationId):
+    if request.user.is_authenticated:
+        Donation.objects.filter(id=donationId).update(donationStatus="Completed")
+        return redirect(f'/verify_donation_confirmation/{donationId}')
+    else:
+       return redirect(f'/verify_donation_confirmation/{donationId}') 
 
 
 @transaction.atomic
@@ -587,6 +846,18 @@ def transferView(request):
         return render(request,'members/app_transfer.html')
     else:
         return render(request,'members/app_transfer.html')
+    
+    
+@transaction.atomic
+def transfer_donationView(request,donationID):
+    if request.user.is_authenticated:
+        userInstance = request.user
+        data = {
+            "donations":Donation.objects.filter(member=userInstance)
+        }
+        return render(request,'members/app_transfer_donation.html',context=data)
+    else:
+        return render(request,'members/app_transfer_donation.html')
     
 @transaction.atomic
 def make_donation_View(request,donationId):
@@ -640,6 +911,52 @@ def donation_sucessfulView(request,donationId):
     else:
         return redirect('/login')
     
+def donation_withdrawal_sucessfulView(request,withdrawalID):
+    if request.user.is_authenticated:
+        donationwithdrawalTransaction = DonationWithdrawal.objects.get(id=withdrawalID)
+        data = {
+            'donationwithdrawalTransaction':donationwithdrawalTransaction,
+        }
+        return render(request,'members/app_donation_withdrawal_success.html',context=data)
+    else:
+        return redirect('/login')
+    
+    
+def process_withdrawal_requestView(request,withdrawalID):
+    if request.user.is_authenticated:
+        withdrawalTransaction = Withdrawal.objects.get(id=withdrawalID)
+        data = {
+            'withdrawalTransaction':withdrawalTransaction,
+        }
+        return render(request,'members/app_process_withdrawal.html',context=data)
+    else:
+        return redirect('/login')
+    
+    
+def withdrawal_successView(request,withdrawalID):
+    if request.user.is_authenticated:
+        withdrawalTransaction = Withdrawal.objects.get(id=withdrawalID)
+        data = {
+            'withdrawalTransaction':withdrawalTransaction,
+        }
+        return render(request,'members/app_withdrawal_success.html',context=data)
+    else:
+        return redirect('/login')
+    
+    
+def make_withdrawalView(request):
+    if request.user.is_authenticated:
+        loginUserInstance = request.user
+        memberBalance = Account.objects.get(member=loginUserInstance).memberBalance
+        preferenceDate = PreferenceDate.objects.get(member=loginUserInstance)
+        data = {
+            'memberBalance':memberBalance,
+            'preferenceDate':preferenceDate,
+            'currentdate': date.today()
+        }
+        return render(request,'members/app_make_withdrawal.html',context=data)
+    else:
+        return redirect('/login')
     
     
 def reconcile_transactionView(request,transactionId):
@@ -664,7 +981,7 @@ def reconcile_transaction_View(request,transactionId):
         
         if decision == "Verified":
             member_instance = User.objects.get(username=username)
-            mainGroup_instance = User.objects.get(username="650065763")
+            mainGroup_instance = User.objects.get(username=settings.MAIN_GROUP_NUMBER)
 
             membersBalance = Account.objects.filter(member=member_instance).values_list('memberBalance', flat=True).first()
             mainAccountBalance = Account.objects.filter(member=mainGroup_instance).values_list('mainAccountBalance',flat=True).first()
@@ -692,3 +1009,38 @@ def reconcile_transaction_View(request,transactionId):
     else:
         messages.info(request,"Payment could not be reconcile")
         return redirect(f'/reconcile_transaction/{transactionId}')
+    
+    
+    
+    
+@transaction.atomic
+def finalise_make_withdrawalView(request):
+    if not (request.user.is_authenticated and request.user.is_member and request.method == "POST"):
+        messages.info(request, "The withdrawal process could not be completed")
+        return redirect('/make_withdrawal')
+    
+    memberBalance = Decimal(request.POST.get('memberBalance'))
+    username =  request.POST.get('username')
+    recievingMomo = request.POST.get('recievingMomo')
+    recievingMomoName = request.POST.get('recievingMomoName')
+    withdrawal_amount = int(request.POST.get('withdrawal_amount', 0))
+    userInstance = User.objects.get(username=username)
+    
+    if withdrawal_amount > memberBalance:
+        messages.info(request, "Insufficient Fund to complete withdrawal")
+        return redirect('/make_withdrawal')
+    
+    if withdrawal_amount <= 0:
+        messages.info(request, "Enter value greater than zero")
+        return redirect('/make_withdrawal')
+    
+    if withdrawal_amount <= memberBalance:
+        create_new_withdrawal_log = Withdrawal(member=userInstance,amount=withdrawal_amount,momoName=recievingMomoName,momoNumber=recievingMomo,withdrawalStatus="Initiated",transactionType="Withdrawal")
+        create_new_withdrawal_log.save()
+        
+        create_newTransactionLog = Transaction(member=userInstance,amount=withdrawal_amount,transactionType="Withdrawal",transactionReference="Withdrawal",transactionStatus="Initiated")
+        create_newTransactionLog.save()
+        
+        withdrawalID = create_new_withdrawal_log.id
+        return redirect(f'/withdrawal_success/{withdrawalID}')
+    

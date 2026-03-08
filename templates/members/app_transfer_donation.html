@@ -1,0 +1,110 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+  <!-- * App Header -->
+  {% include '../ext/header.html' %}
+  <!-- * App Header -->
+
+  <body class="bg-white">
+   <!-- loader -->
+        {% comment %} {% include "members/app_loader.html" %} {% endcomment %}
+    <!-- * loader -->
+
+    <!-- App Header -->
+    <div class="appHeader no-border">
+      <div class="left">
+        <a href="#" class="headerButton goBack"><ion-icon name="chevron-back-outline"></ion-icon></a>
+      </div>
+      <div class="pageTitle">Donation Transfer</div>
+      
+      <div class="right">
+ <ion-icon name="swap-horizontal"></ion-icon>
+</i>
+      </div>
+      
+    </div>
+    <!-- * App Header -->
+ 
+ 
+
+<br><br><br><br>
+<!-- Transfer Sheet -->
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title text-danger">VERIFY DONATION DETAILS</h5>
+      </div>
+      <div class="modal-body">
+        <div class="action-sheet-content">
+          <form method="post" action="/transfer_donation_" autocomplete="off">
+            {% csrf_token %}
+            <div class="form-group basic">
+              <div class="input-wrapper">
+                <label class="label" for="account2d">From</label>
+                <select class="form-control custom-select" name="selectedDonation" id="account2d" required>
+                  <option value="" disabled selected>Select Donation</option>
+                  {% for eachDonation in donations %}
+                  <option value="{{eachDonation.id}}">{{eachDonation.donationType}} | Balance {{eachDonation.totalDonationAmount}} XAF</option>
+                  {% endfor %}
+                </select>
+              </div>
+            </div>
+
+            <div class="form-group basic">
+              <div class="input-wrapper">
+                <label class="label" for="text11d">MoMo Number</label>
+                <input type="number" class="form-control"  id="text11d" name="momoNumber" placeholder="Momo number to recieve payment " required />
+                <i class="clear-input"><ion-icon name="close-circle"></ion-icon></i>
+              </div>
+            </div>
+
+            <div class="form-group basic">
+              <div class="input-wrapper">
+                <label class="label" for="text11d">MoMo Name</label>
+                <input type="text" class="form-control" id="text11d" name="momoName" placeholder="Momo names to recieve payment" required />
+                <i class="clear-input"><ion-icon name="close-circle"></ion-icon></i>
+              </div>
+            </div>
+
+            <div class="form-group basic">
+              <label class="label">Withdrawal Amount</label>
+              <div class="input-group mb-2">
+                <span class="input-group-text" id="basic-addonb1">XAF</span>
+                <input type="number" class="form-control" name="with_amount" min="500" placeholder="Enter withdrawal amount" required />
+              </div>
+            </div>
+          {% if messages %}
+            {% for message in messages %}
+             <div class="alert alert-outline-primary alert-dismissible fade show" role="alert">
+              {{ message }}!
+              <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+              </div>
+            {% endfor %}
+          {% else %}
+
+          {% endif %}
+          <br />
+            <div class="form-group basic">
+              <button type="submit" class="btn btn-primary btn-block btn-lg" data-bs-dismiss="modal">Continue</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+<!-- * Transfer Action Sheet -->
+
+
+  <script>
+      function handleSubmit(form) {
+        const btn = form.querySelector('button[type="submit"]')
+        btn.disabled = true
+        btn.innerText = 'Please wait...'
+      }
+    </script>
+    <!-- App Bottom Menu -->
+    {% include 'members/app_buttom_menu.html' %}
+    <!-- App Bottom Menu -->
+    {% include 'members/app_modals.html' %}
+
+    {% include '../ext/footer.html' %}
+  </body>
+</html>

@@ -4,10 +4,8 @@
 {% include "../ext/header.html" %}
 <body>
 
-    <!-- loader -->
-    {% comment %} <div id="loader">
-        <img src="assets/img/loading-icon.png" alt="icon" class="loading-icon">
-    </div> {% endcomment %}
+   <!-- loader -->
+        {% include "members/app_loader.html" %}
     <!-- * loader -->
 
     <!-- * App Header -->
@@ -39,7 +37,13 @@
             </ul>
             {% else %}
             <br><br>
-            <center><p>There are no Donation log to display at the moment.</p></center>
+            <div class="container">
+            <div class="alert alert-outline-dark mb-1 text-center" role="alert">
+            There are no Donation log to display at the moment.
+            <br>
+            </div>
+             </div>
+
             {% endif %}
         </div>
 </div>

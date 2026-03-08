@@ -17,6 +17,8 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
+
+
 a {
   color: #6236FF;
   outline: 0 !important;
@@ -1173,7 +1175,7 @@ blockquote.blockquote .blockquote-footer {
   right: 0;
   bottom: 0;
   z-index: 99999;
-  background: rgba(123, 120, 131, 0.3); /* light transparent */
+  background: rgba(65, 55, 87, 0.3); /* light transparent */
   display: flex;
   align-items: center;
   justify-content: center;

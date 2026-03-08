@@ -1,0 +1,74 @@
+
+<!doctype html>
+<html lang="en">
+
+<!-- * App Header -->
+{% include "../ext/header.html" %}
+<!-- * App Header -->
+<body>
+
+    <!-- loader -->
+        {% include "members/app_loader.html" %}
+    <!-- * loader -->
+
+        <!-- * App Header -->
+    {% include "members/app_header.html" %}
+    <!-- * App Header -->
+    <!-- App Header -->
+
+
+    <!-- App Capsule -->
+    <div id="appCapsule">
+        <div class="section mt-2 text-center">
+        </div>
+        <div class="section mb-5 p-2">
+            <form action="/delete_preference_date" method="post" autocomplete="off">
+                {% csrf_token %}
+                <div class="card">
+                    <div class="card-body">
+                        <div class="form-group basic">
+                            <div class="input-wrapper">
+                                <label class="label" for="password2">USERNAME</label>
+                                <input type="number" class="form-control" name="username"  id="password2" inputmode="numeric" pattern="[0-9]*" maxlength="12" autocomplete="off"
+                                    placeholder="Enter username remove preference date">
+                                <i class="clear-input">
+                                    <ion-icon name="close-circle"></ion-icon>
+                                </i>
+                            </div>
+                    </div>
+                    </div>
+                </div>
+                <br>
+                <div class="form-button transparent">
+                    <button type="submit" class="btn btn-primary btn-block btn-lg">Remove Pref Date</button>
+                </div>
+
+            </form>
+        </div>
+          {% if messages %}
+            {% for message in messages %}
+             <div class="alert alert-outline-primary alert-dismissible fade show" role="alert">
+              {{ message }}!
+              <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+              </div>
+            {% endfor %}
+          {% else %}
+
+          {% endif %}
+          <br />
+    </div>
+    <!-- * App Capsule -->
+
+
+
+    <!-- App Bottom Menu -->
+    {% include "members/app_buttom_menu.html" %}
+    <!-- App Bottom Menu -->
+
+
+{% include "../ext/footer.html" %}
+
+
+</body>
+
+</html>

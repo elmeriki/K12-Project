@@ -16,6 +16,7 @@ from django.db import transaction
 import threading
 from k12auth.models import User
 from members.models import *
+from django.conf import settings
 
 def welcome(request):
     if request.user.is_authenticated:
@@ -41,14 +42,15 @@ def user_registrattion(request):
 def member_dashboard(request):
     members_instance=User.objects.filter( Q(is_member=True,is_staff=False) | Q(is_member=False,is_staff=False) )
     username = request.user.username
-    mainUserInstance = User.objects.get(username="650065763")
+    mainUserInstance = User.objects.get(username=settings.MAIN_GROUP_NUMBER)
     select_members_instance=User.objects.get(username=username)        
     mainAccountBalance = Account.objects.filter(member=mainUserInstance).values_list('mainAccountBalance', flat=True).first() 
     membersBalance = Account.objects.filter(member=select_members_instance).values_list('memberBalance',flat=True).first()
     troubleFundsBalance = Account.objects.filter(member=mainUserInstance).values_list('troubleFundsBalance',flat=True).first()
     groupRegistrationAmount = Account.objects.filter(member=select_members_instance).values_list('registrationAmount',flat=True).first()
     transaction_log = Transaction.objects.filter(member=select_members_instance).order_by('-created_at')[:5]
-    toBeReconcileTransaction = Transaction.objects.filter(transactionStatus="Initiated").order_by('-created_at')[:10]
+    toBeReconcileTransaction = Transaction.objects.filter(transactionStatus="Initiated",transactionType="Deposit").order_by('-created_at')[:10]
+    toBeWithdrawalTransaction = Withdrawal.objects.filter(withdrawalStatus="Initiated").order_by('-created_at')[:10]
 
     data = {
         'members_instance':members_instance,
@@ -57,13 +59,40 @@ def member_dashboard(request):
         'troubleFundsBalance':troubleFundsBalance,
         'groupRegistrationAmount':groupRegistrationAmount,
         'transaction_log':transaction_log,
-        'toBeReconcileTransaction':toBeReconcileTransaction
+        'toBeReconcileTransaction':toBeReconcileTransaction,
+        'toBeWithdrawalTransaction':toBeWithdrawalTransaction
     }    
     return render(request,'members/dashboard.html',context=data)
 
-
+@login_required
 def reset_pinView(request):
     return render(request,'members/app_change_pin.html',{})
+
+
+@login_required
+def set_preference_dateView(request):
+    preferenceDateCount=PreferenceDate.objects.filter(member=request.user).count()
+    data = {
+        "preferenceDateCount":preferenceDateCount
+    }
+    return render(request,'members/app_preference_date.html',context=data)
+
+@login_required
+def delete_preference_DateView(request):
+    return render(request,'members/app_delete_preference_date.html')
+
+
+@login_required
+def preference_date_successfulView(request,preference_date):
+    data = {
+        "preference_date" : preference_date
+    }
+    return render(request,'members/app_preference_date_successful.html',context=data)
+
+
+@login_required
+def preference_delete_successfulView(request):
+    return render(request,'members/app_preference_delete_successful.html')
 
 
 @transaction.atomic
@@ -117,43 +146,119 @@ def register_a_memberView(request):
     
     
     
+# @transaction.atomic
+# def members_loginView(request):
+#     if request.method =="POST" and request.POST['username'] and request.POST['password']:
+#         username = request.POST['username']
+#         password =request.POST['password']
+                
+#         if not User.objects.filter(username=username).exists():
+#             messages.info(request,'Incorrect login credentials.')
+#             return redirect('/login')  
+        
+#         userlog = auth.authenticate(username=username,password=password)
+#         # checking if it is an existing user in the database
+        
+#         # customise error messages handler
+#         if userlog is not None:
+#             auth.login(request, userlog)
+#             if request.user.is_authenticated and request.user.is_member or request.user.is_admin:
+#                 return redirect('/members_dashboard')
+#         else:
+#             messages.info(request,"Incorrect login credentials.")
+#             return redirect('/login')
+        
+#         if userlog is not None:
+#             if not userlog.is_member:
+#                 messages.info(request, "Your account is not activated.")
+#                 return redirect('/login')
+
+#             auth.login(request, userlog)
+#             return redirect('/dashboard')  # or wherever you want to send logged-in users
+
+#         else:
+#             messages.info(request, "Incorrect login credentials.")
+#             return redirect('/login')
+                
+#     else:
+#         messages.info(request,"Enter a Valid username and PIN")
+#         return redirect('/login')  
+
 @transaction.atomic
 def members_loginView(request):
-    if request.method =="POST" and request.POST['username'] and request.POST['password']:
-        username = request.POST['username']
-        password =request.POST['password']
-                
+    if request.method == "POST":
+        username = request.POST.get('username')
+        password = request.POST.get('password')
+
         if not User.objects.filter(username=username).exists():
-            messages.info(request,'Incorrect login credentials.')
-            return redirect('/login')  
-        
-        userlog = auth.authenticate(username=username,password=password)
-        # checking if it is an existing user in the database
-        
-        # customise error messages handler
-        if userlog is not None:
-            auth.login(request, userlog)
-            if request.user.is_authenticated and request.user.is_member or request.user.is_authenticated and request.user.is_cashier or request.user.is_authenticated and request.user.is_admin:
-                return redirect('/members_dashboard')
-        else:
-            messages.info(request,"Incorrect login credentials.")
+            messages.info(request, "Incorrect login credentials.")
             return redirect('/login')
-        
-        if userlog is not None:
-            auth.login(request, userlog)
-            if request.user.is_authenticated and not request.user.is_member:
-                messages.info(request,"Your acount is not activated ")
-                return redirect('/login')
-        else:
-            messages.info(request,"Incorrect login credentials.")
+
+        userlog = auth.authenticate(username=username, password=password)
+
+        if userlog is None:
+            messages.info(request, "Incorrect login credentials.")
             return redirect('/login')
-                
+
+        # check activation BEFORE login
+        if not userlog.is_member and not userlog.is_admin:
+            messages.info(request, "Your account is not activated.")
+            return redirect('/login')
+
+        # login user
+        auth.login(request, userlog)
+        return redirect('/members_dashboard')
+
     else:
-        messages.info(request,"Enter a Valid username and PIN")
-        return redirect('/login')  
-    
+        messages.info(request, "Enter a valid username and PIN")
+        return redirect('/login')
     
 def member_logoutView(request):
     auth.logout(request)
     messages.info(request,"Logout Successfully")
     return redirect('/') 
+
+
+@transaction.atomic
+@login_required
+def save_preference_dateView(request):
+    if request.method == "POST":
+        username = request.POST.get("username", "").strip()
+        preference_date = request.POST.get("preference_date")
+
+        if not username or not preference_date:
+            messages.info(request, "Please enter a valid username and date")
+            return redirect('/set_preference_date')
+
+        try:
+            user_instance = User.objects.get(username=username)
+        except User.DoesNotExist:
+            messages.info(request, "Incorrect username to set preference date")
+            return redirect('/set_preference_date')
+
+        # Update if exists, otherwise create new
+        preference_instance, created = PreferenceDate.objects.update_or_create(
+            member=user_instance,
+            defaults={"preference_date": preference_date}
+        )
+        return redirect(f'/preference_date_successful/{preference_date}')
+        
+  
+@transaction.atomic
+@login_required
+def delete_preference_dateView(request):
+    if request.method == "POST":
+        username = request.POST.get("username", "").strip()
+
+        if not username:
+            messages.info(request, "Please enter a valid username and date")
+            return redirect('/delete_preference_Date')
+
+        try:
+            user_instance = User.objects.get(username=username)
+            PreferenceDate.objects.filter(member=user_instance).delete()
+            return render(request,'members/app_preference_delete_successful.html')
+        
+        except User.DoesNotExist:
+            messages.info(request, "Preference Date could not be remove")
+            return redirect('/delete_preference_Date')

@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+  {% include '../ext/header.html' %}
+
+  <body class="bg-white">
+    <!-- loader -->
+    {% include 'members/app_loader.html' %}
+    <!-- * loader -->
+
+    <!-- App Header -->
+    <div class="appHeader">
+      <div class="left">
+        <a href="#" class="headerButton goBack"><ion-icon name="chevron-back-outline"></ion-icon></a>
+      </div>
+      <div class="pageTitle">Withdrawal Detail</div>
+    </div>
+    <!-- * App Header -->
+
+    <!-- App Capsule -->
+    <div id="appCapsule" class="full-height">
+      <div class="section">
+        <div class="listed-detail mt-3">
+          <div class="icon-wrapper">
+            <div class="iconbox">
+              <ion-icon name="checkmark-circle-outline"></ion-icon>
+            </div>
+          </div>
+          <h3 class="text-center mt-2">THANK YOU.</h3>
+        </div>
+
+        <ul class="listview simple-listview no-space mt-3">
+             <li>
+            <span>Names</span>
+            <strong>{{ select_withdrawal.member.first_name}}</strong>
+          </li>
+              <li>
+            <span>Username</span>
+            <strong>{{ select_withdrawal.member.username }}</strong>
+          </li>
+          <li>
+            <span>Status</span>
+            <strong class="text-danger">{{ select_withdrawal.withdrawalStatus }}</strong>
+          </li>
+          <li>
+            <span>Date</span>
+            <strong>{{ select_withdrawal.created_at.date }}</strong>
+          </li>
+          <li>
+            <span>Reference</span>
+            <strong>Withdrawal</strong>
+          </li>
+          <li>
+            <span>Amount</span>
+            <strong>{{ select_withdrawal.amount }} XAF</strong>
+          </li>
+          
+           {% if select_withdrawal.withdrawalStatus == "Successful" %}
+          <span>PROOF OF PAYMENT</span>
+            <div class="custom-file-upload" id="fileUpload1">
+                  <img src="{{ select_withdrawal.POPs.url }}" alt="Proof of Payment" />
+                <label for="fileuploadInput"></label>
+          </div>
+          {% elif select_withdrawal.withdrawalStatus == "Initiated" %}
+
+          {% endif %}
+        </ul>
+        <br><br><br>
+        <a href="/members_dashboard" class="btn btn-primary btn-block btn-lg">Close</a>
+      </div>
+    </div>
+    <!-- * App Capsule -->
+
+    <!-- App Bottom Menu -->
+    {% include 'members/app_buttom_menu.html' %}
+    {% include 'members/app_modals.html' %}
+
+    <!-- App Bottom Menu -->
+
+    {% include '../ext/footer.html' %}
+  </body>
+</html>

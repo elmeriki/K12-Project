@@ -62,15 +62,74 @@
             {% csrf_token %}
             <input type="amount" name="amount" value="{{amount}}" hidden id="">
             <input type="text" name="reference" value="{{reference}}" hidden id="">
+            
             {% if request.user.is_admin %}
-            <input type="submit" class="btn btn-lg btn-danger btn-block" disabled value="Members Only">
+
+            {% if donation_instance.donationStatus == "Pending" %}
+            <a  data-bs-toggle="modal" id="closeDonationLink" data-bs-target="#DialogBasic" class="btn btn-lg btn-warning btn-block">
+            Close Donation
+            </a>
             {% else %}
+            <a href="#"  class="btn btn-lg btn-primary btn-block">
+            Closed Already
+            </a>
+            {% endif %}
+
+            {% else %}
+
+            {% if donation_instance.donationStatus == "Pending" %}
             <input type="submit" class="btn btn-lg btn-danger btn-block" value="Donate Now">
+            {% else %}
+            <button disabled class="btn btn-lg btn-warning btn-block">Closed</button>
+            {% endif %}
+
             {% endif %}
           </form>     
+  
         </div>
+          <div class="container">
+              <br><br><br>
+          {% if donation_instance.donationStatus == "Completed" and donation_instance.member.username == request.user.username and donation_instance.totalDonationAmount > 0 %}
+          <a href="/transfer_donation/{{donation_instance.id}}" class="btn btn-lg btn-success btn-block">Withdrawal Donation</a>
+          {% else %}
+          
+          {% endif %}
+          </div>
           </div>
 
+
+<!-- Modal Box to confirm Donation -->
+<div class="modal fade dialogbox" id="DialogBasic" data-bs-backdrop="static" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            
+            <div class="modal-header">
+                <h5 class="modal-title">Close Donation</h5>
+            </div>
+
+            <div class="modal-body">
+                Are you sure you want to close this Donation?
+            </div>
+
+            <div class="modal-footer">
+                <div class="btn-inline">
+                    <button class="btn btn-text-secondary" data-bs-dismiss="modal">
+                        Cancel
+                    </button>
+
+                    <a href="/close_donation/{{donation_instance.id}}" class="btn btn-text-primary">
+                      Confirm
+                    </a>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+
+<!-- Modal Box to confirm Donation -->
+          
     <script>
       function handleSubmit(form) {
         const btn = form.querySelector('button[type="submit"]')

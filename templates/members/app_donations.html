@@ -26,7 +26,7 @@
                         <img src="{% static 'assets/img/photo.png'  %}" alt="img" class="image-block imaged w48">
                         <div>
                             <strong>{{eachDonation.member.first_name | upper}}</strong>
-                            <p>GROSS AMOUNT DONATED: <span class="text-danger">{{eachDonation.totalDonationAmount}} XAF</span> </p>
+                            <p>AMOUNT DONATED: <span class="text-danger">{{eachDonation.totalDonationAmount}} XAF</span> </p>
                             
                         </div>
                     </div>
@@ -47,7 +47,14 @@
                 {% endfor %}
 
                 {% else %}
-                    <p> There are no donations available to contribute at the moment.</p>
+                <div class="container">
+                <div class="alert alert-outline-dark mb-1 text-center" role="alert">
+                      There are no donations available to contribute at the moment.
+                        <br>
+                    </div>
+             </div>
+
+                 
                 {% endif %}
             </div>
         </div>

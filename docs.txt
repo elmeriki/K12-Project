@@ -24,14 +24,24 @@ Master account which shows all the account balane
 The super account activate the master account 
 Other account make savings to the main account 
 
+Donation status (Completed / Pending)
+
+Donation withdrawal status / Pending) Completed
 
 transactionStatus (Initiated,Verified,Rejected,Cancel)
 transactionType (Savings, Trouble Funds,Donation,Transfer)
 Main Admin which authorise everyone
-Admin (650065763)
+Admin (650065760)
+=================
+User1 (650065761) Joan Gomba
+User2 (650065762) Mukete
+User4 (650065764) Linda
+User5 (650065765) kelvin
+User6 (650065766) Florence
 
-User1 (650065761)
-User2 (650065762)
-User4 (650065764)
-User5 (650065765)
-User6 (650065766)
+
+TO BE DONE
+PROTECT DOUBLE DEPOSIT IF FIRST ONE IS NOT VALIDATED 
+VIEW ALL DEPOSIT (SUCCESSFUL OR UNSUCCESSFUL)
+VIEW ALL WITHDRWAL (SUCCESSFUL OR UNSUCCESSFUL)
+VIEW ALL DONATION CASHOUT

@@ -25,7 +25,7 @@
               <ion-icon name="checkmark-circle-outline"></ion-icon>
             </div>
           </div>
-          <h3 class="text-center mt-2">Payment Detail</h3>
+          <h3 class="text-center mt-2">Payment Details</h3>
         </div>
 
         <ul class="listview simple-listview no-space mt-3">
@@ -53,6 +53,14 @@
             <span>Amount</span>
             <strong>{{ select_transaction.amount }} XAF</strong>
           </li>
+          {% if select_transaction.transactionStatus == "Verified" %}
+          <span>PROOF OF PAYMENT</span>
+            <div class="custom-file-upload" id="fileUpload1">
+                  <img src="{{ select_transaction.PODs.url }}" alt="Proof of Payment" />
+                <label for="fileuploadInput"></label>
+          </div>
+          {% elif select_transaction.transactionStatus == "Initiated" %}
+          {% endif %}
         </ul>
         <br><br><br>
         <a href="/members_dashboard" class="btn btn-primary btn-block btn-lg">Close</a>

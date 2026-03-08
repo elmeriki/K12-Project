@@ -21,7 +21,7 @@
         <div class="right">
             <a href="/transactions" class="headerButton">
                 <ion-icon class="icon" name="notifications-outline"></ion-icon>
-                <span class="badge badge-danger">0</span>
+                <span class="badge badge-danger"></span>
             </a>
             {% comment %} <a href="app-settings.html" class="headerButton">
                 <img src=" {% static 'assets/img/photo.png'  %}" alt="image" class="imaged w32">
@@ -55,11 +55,11 @@
                 <!-- Admin Menu Card -->
                 <div class="wallet-footer">
                     <div class="item">
-                        <a href="#" >
+                        <a href="/process_donation_withdrawal" >
                             <div class="icon-wrapper bg-danger">
                                 <ion-icon name="arrow-down-circle-outline"></ion-icon>
                             </div>
-                            <strong>Reconcile</strong>
+                            <strong>Donx Out</strong>
                         </a>
                     </div>
                     <div class="item">
@@ -76,6 +76,14 @@
                                 <ion-icon name="send-outline"></ion-icon>
                             </div>
                             <strong>Activate Member</strong>
+                        </a>
+                    </div>
+                        <div class="item">
+                        <a href="/delete_preference_Date">
+                            <div class="icon-wrapper bg-success">
+                                <ion-icon name="calendar-outline"></ion-icon>
+                            </div>
+                            <strong>Pref Dates</strong>
                         </a>
                     </div>
                 </div>
@@ -131,7 +139,7 @@
             <div class="row mt-2">
                 <div class="col-6">
                     <div class="stat-box">
-                        <div class="title">MY ACCOUNT BALANCE</div>
+                        <div class="title">MY SAVINGS</div>
                         <div class=" text-primary"><strong>{{membersBalance}} XAF</strong></div>
                     </div>
                 </div>
@@ -147,12 +155,11 @@
                     <div class="stat-box">
                         <div class="title">GROUP REGISTRATION</div>  
                         <div style="text-align:center; margin: 20px;">
-                        <ion-icon name="people-outline" style="font-size: 80px; color: #4CAF50;"></ion-icon>
-                        <ion-icon name="checkmark-circle-outline" style="font-size: 80px; color: #4CAF50; position: relative; left: -20px; top: 20px;"></ion-icon>
+                        <ion-icon name="people-outline" style="font-size: 50px; color: #4CAF50;"></ion-icon>
+                        <ion-icon name="checkmark-circle-outline" style="font-size: 50px; color: #4CAF50; position: relative; left: -20px; top: 20px;"></ion-icon>
                         <div style="font-size: 24px; margin-top: 10px; font-weight: bold;"></div>
                     </div>
                         <div class=" text-primary"> {{groupRegistrationAmount}} XAF</div>
-                        
                     </div>
                 </div>
             </div> 
@@ -164,8 +171,8 @@
 <!-- Member Transaction History -->
         <div class="section mt-4">
             <div class="section-heading">
-                <h2 class="title">Transactions</h2>
-                <a href="/transactions" class="link">View All</a>
+                <h2 class="title">TRANSACTIONS</h2>
+                <a href="/transactions" class="link">More</a>
             </div>
             <div class="card">
                 <ul class="listview flush transparent no-line image-listview detailed-list mt-1 mb-1">
@@ -186,15 +193,18 @@
                                     {% endif %}
                                 </div>
                                 <div class="text-end">
-                                    {% if eachTransaction.transactionStatus == "Initiated" or eachTransaction.transactionStatus == "Rejected" or eachTransaction.transactionStatus == "Fraud"  %}
+                                    {% if eachTransaction.transactionStatus == "Rejected" or eachTransaction.transactionStatus == "Fraud"  %}
                                     <strong>+{{eachTransaction.amount}} XAF</strong>
-                                    {% elif eachTransaction.transactionType == "Deposit" or eachTransaction.transactionType == "Recieving" %}
+                                    
+                                    {% elif eachTransaction.transactionType == "Deposit" or eachTransaction.transactionType == "Recieving" or eachTransaction.transactionType == "Incoming" %}
                                     <strong>+{{eachTransaction.amount}} XAF</strong>
-                                    {% elif eachTransaction.transactionType == "Donation" or  eachTransaction.transactionType == "Transfer"  %}
+
+                                    {% elif eachTransaction.transactionType == "Donation" or  eachTransaction.transactionType == "Transfer" or eachTransaction.transactionType  == "Donx Withdrawal" or eachTransaction.transactionType == "Withdrawal" %}
                                     <strong>-{{eachTransaction.amount}} XAF</strong>
+
                                     {% endif %}
                                     <div class="text-small">
-                                        {{eachTransaction.created_at.date}}
+                                        {{eachTransaction.created_at}}
                                     </div>
                                 </div>
                             </div>
@@ -210,49 +220,83 @@
         </div>
 <!-- Member Transaction History -->
 {% else %}
-<!-- Admin Transaction History -->
+<!-- Admin Deposit Transaction -->
+    {% if toBeReconcileTransaction %}
         <div class="section mt-4">
             <div class="section-heading">
-                <h2 class="title">Reconcile Payment</h2>
+                <h2 class="title">Reconcile Deposit</h2>
                 <a href="/transactions" class="link">View All</a>
             </div>
             <div class="card">
-                <ul class="listview flush transparent no-line image-listview detailed-list mt-1 mb-1">
-                    <!-- item -->
-                    {% for reconcileData in toBeReconcileTransaction %}
+            <ul class="listview flush transparent no-line image-listview detailed-list mt-1 mb-1">
+            <!-- item -->
+            {% for reconcileDeposit in toBeReconcileTransaction %}
                     <li>
-                        {% if reconcileData.transactionStatus == "Initiated" %}
-                        <a href="/reconcile_transaction/{{reconcileData.id}}" class="item">
-                        {% else %}
-                        <a href="/transactions_details/{{reconcileData.id}}" class="item">
-                        {% endif %}
+                        <a href="/reconcile_transaction/{{reconcileDeposit.id}}" class="item">
                             <div class="icon-box bg-success">
                                 <ion-icon name="arrow-up-outline"></ion-icon>
                             </div>
                             <div class="in">
                                 <div>
-                                    <strong>{{reconcileData.transactionType}}</strong>
-                                    <div class="text-small text-secondary">{{reconcileData.transactionStatus}}</div>
+                                    <strong>{{reconcileDeposit.transactionType}}</strong>
+                                    <div class="text-small text-secondary">{{reconcileDeposit.transactionStatus}}</div>
                                 </div>
                                 <div class="text-end">
-                                    <strong>{{reconcileData.amount}} XAF</strong>
+                                    <strong>{{reconcileDeposit.amount}} XAF</strong>
                                     <div class="text-small">
-                                        {{reconcileData.created_at.date}}
+                                        {{reconcileDeposit.created_at.date}}
                                     </div>
                                 </div>
                             </div>
                         </a>
                     </li>
-                    {% endfor %}
-                    <!-- * item -->
+            {% endfor %}
                 </ul>
                 <div class="card-body pt-0">
                     <a href="/transactions" class="btn btn-block btn-outline-secondary">Load more</a>
                 </div>
             </div>
         </div>
-<!-- Admin Transaction  -->
 {% endif %}
+{% if toBeWithdrawalTransaction %}
+        <div class="section mt-4">
+            <div class="section-heading">
+                <h2 class="title">Reconcile Withdrawal</h2>
+                <a href="/transactions" class="link">View All</a>
+            </div>
+            <div class="card">
+            <ul class="listview flush transparent no-line image-listview detailed-list mt-1 mb-1">
+            <!-- item -->
+            {% for reconcileWithdrawal in toBeWithdrawalTransaction %}
+                    <li>
+                        <a href="/process_withdrawal_request/{{reconcileWithdrawal.id}}" class="item">
+                            <div class="icon-box bg-success">
+                                <ion-icon name="arrow-up-outline"></ion-icon>
+                            </div>
+                            <div class="in">
+                                <div>
+                                    <strong>Withdrawal</strong>
+                                    <div class="text-small text-secondary">{{reconcileWithdrawal.withdrawalStatus}}</div>
+                                </div>
+                                <div class="text-end">
+                                    <strong>{{reconcileWithdrawal.amount}} XAF</strong>
+                                    <div class="text-small">
+                                        {{reconcileWithdrawal.created_at.date}}
+                                    </div>
+                                </div>
+                            </div>
+                        </a>
+                    </li>
+            {% endfor %}
+                </ul>
+                <div class="card-body pt-0">
+                    <a href="/transactions" class="btn btn-block btn-outline-secondary">Load more</a>
+                </div>
+            </div>
+        </div>
+{% endif %}
+{% endif %}
+
 
          <!-- Send Money -->
         <div class="section full mt-4">
@@ -361,12 +405,12 @@
                             </a>
                         </li>
                         <li>
-                            <a href="/transactions" class="item">
+                            <a href="/withdrawals" class="item">
                                 <div class="icon-box bg-primary">
-                                    <ion-icon name="repeat-outline"></ion-icon>
+                                    <ion-icon name="log-out-outline"></ion-icon>
                                 </div>
                                 <div class="in">
-                                    Reconcile
+                                    Witdrawals
                                 </div>
                             </a>
                         </li>
@@ -528,6 +572,16 @@
                             </a>
                         </li>
                         <li>
+                            <a href="/make_withdrawal" class="item">
+                                <div class="icon-box bg-primary">
+                                    <ion-icon name="arrow-up-circle-outline"></ion-icon>
+                                </div>
+                                <div class="in text-danger">
+                                Withdrawal
+                                </div>
+                            </a>
+                        </li>
+                              <li>
                             <a href="/donations" class="item">
                                 <div class="icon-box bg-primary">
                                     <ion-icon name="heart-outline"></ion-icon>
@@ -537,6 +591,18 @@
                                 </div>
                             </a>
                         </li>
+
+                                   <li>
+                            <a href="/donation_withdrawal" class="item">
+                                <div class="icon-box bg-primary">
+                                    <ion-icon name="repeat-outline"></ion-icon>
+                                </div>
+                                <div class="in">
+                                Donation Cashout
+                                </div>
+                            </a>
+                        </li>
+                  
                     </ul>
                     <!-- * menu -->
 

@@ -29,7 +29,7 @@
         <a href="/incoming_payment" class="item" >
             <div class="col">
                 <ion-icon name="archive-outline"></ion-icon>
-                <strong>Payments</strong>
+                <strong>Deposits</strong>
             </div>
         </a>
          {% endif %}
@@ -102,12 +102,21 @@
                 <strong>Deposit</strong>
             </div>
         </a>
+        {% if "/donations" in request.path %}
+        <a href="/donations" class="item active">
+            <div class="col">
+                <ion-icon name="heart-outline"></ion-icon>
+                <strong>Donations</strong>
+            </div>
+        </a>
+        {% else %}
         <a href="/donations" class="item">
             <div class="col">
                 <ion-icon name="heart-outline"></ion-icon>
                 <strong>Donations</strong>
             </div>
         </a>
+        {% endif %}
         
         {% if "/member_list" in request.path %}
         <a href="/member_list" class="item active">

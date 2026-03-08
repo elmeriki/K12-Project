@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+  {% include '../ext/header.html' %}
+
+  <body class="bg-white">
+    <!-- loader -->
+    {% include 'members/app_loader.html' %}
+    <!-- * loader -->
+
+    <!-- App Header -->
+    <div class="appHeader">
+      {% comment %} <div class="left">
+        <a href="#" class="headerButton goBack"><ion-icon name="home-outline"></ion-icon></a>
+      </div> {% endcomment %}
+
+      <div class="pageTitle">WITHDRAWAL CONFIRMATION</div>
+      <div class="right">
+        <a href="#" class="headerButton"><ion-icon name="checkmark-circle-outline"></ion-icon></a>
+      </div>
+    </div>
+    <!-- * App Header -->
+
+    <!-- App Capsule -->
+    <div id="appCapsule" class="full-height">
+      <div class="section">
+
+        <div class="listed-detail mt-3">
+          <div class="icon-wrapper">
+            <div class="iconbox">
+              <ion-icon name="checkmark-circle"></ion-icon>
+            </div>
+          </div>
+          <h3 class="text-center mt-2">SAVINGS WITHDRAWAL</h3>
+        </div>
+        <br />
+        <form action="/finalise_make_withdrawal" onsubmit="handleSubmit(this)" method="post"  autocomplete="off">
+          {% csrf_token %}
+          <div class="card">
+            <div class="card-body">
+                <div class="form-group basic">
+                <div class="input-wrapper">
+                  <label class="label" for="email1">SAVINGS BALANCE</label>
+                  <input type="text" class="form-control" id="email1" name="memberBalance"  value="{{memberBalance}}" />
+                  <i class="clear-input"><ion-icon name="close-circle"></ion-icon></i>
+                </div>
+              </div>
+
+             <div class="form-group basic">
+                <div class="input-wrapper">
+                  <label class="label" for="email1">MY USERNAME</label>
+                  <input type="text" class="form-control" id="email1" name="username"  readonly value="{{request.user.username}}" />
+                  <i class="clear-input"><ion-icon name="close-circle"></ion-icon></i>
+                </div>
+              </div>
+              
+                <div class="form-group basic">
+                <div class="input-wrapper">
+                  <label class="label" for="email1">Momo Number:</label>
+                  <input type="number" class="form-control" id="email1" name="recievingMomo" required placeholder="Enter momo number to recieve withdrawal" />
+                  <i class="clear-input"><ion-icon name="close-circle"></ion-icon></i>
+                </div>
+              </div>
+
+              <div class="form-group basic">
+                <div class="input-wrapper">
+                  <label class="label" for="email1">Momo Name</label>
+                  <input type="text" class="form-control" id="email1" name="recievingMomoName" required  placeholder="Enter Momo name matching number" />
+                  <i class="clear-input"><ion-icon name="close-circle"></ion-icon></i>
+                </div>
+              </div>
+              <div class="form-group basic">
+                <div class="input-wrapper">
+                <div class="input-group mb-2">
+                <span class="input-group-text text-danger" id="basic-addonb1">XAF</span>
+                <input type="number" class="form-control" name="withdrawal_amount" min="500" required  placeholder="Enter withdrawal"/>
+              </div>
+            </div>
+          </div>
+          
+          {% if messages %}
+            {% for message in messages %}
+             <div class="alert alert-outline-primary alert-dismissible fade show" role="alert">
+              {{ message }}!
+              <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+              </div>
+            {% endfor %}
+            {% else %}
+            {% endif %}
+          <br />
+          {% if preferenceDate.preference_date == currentdate %}
+          <button type="submit" name="submutbutton" class="btn btn-primary btn-block btn-lg">CONFIRM</button>
+          {% else %}
+          <button type="submit" disabled name="submutbutton" class="btn btn-danger btn-block btn-lg">UNAVALIABLE</button>
+          {% endif %}
+        </form>
+      </div>
+    </div>
+    <!-- * App Capsule -->
+    <script>
+      function handleSubmit(form) {
+        const btn = form.querySelector('button[type="submit"]')
+        btn.disabled = true
+        btn.innerText = 'Processing Payment...'
+      }
+    </script>
+    <!-- App Bottom Menu -->
+    {% include 'members/app_buttom_menu.html' %}
+    {% include 'members/app_modals.html' %}
+
+    <!-- App Bottom Menu -->
+
+    {% include '../ext/footer.html' %}
+  </body>
+</html>

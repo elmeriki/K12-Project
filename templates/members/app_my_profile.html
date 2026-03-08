@@ -50,21 +50,21 @@
             <li>
                 <a href="#" class="item">
                     <div class="in">
-                        <div>{{members_instance.first_name}}</div>
+                        <div>{{members_instance.first_name | upper}}</div>
                     </div>
                 </a>
             </li>
                <li>
                 <a href="#" class="item">
                     <div class="in">
-                        <div>{{members_instance.last_name}}</div>
+                        <div>{{members_instance.last_name | upper}}</div>
                     </div>
                 </a>
             </li>
                <li>
                 <a href="#" class="item">
                     <div class="in">
-                        <div>{{members_instance.username}}</div>
+                        <div>{{members_instance.username }}</div>
                     </div>
                 </a>
             </li>
@@ -86,6 +86,13 @@
                 <a href="/reset_pin" class="item">
                     <div class="in text-danger">
                         <div>Change PIN</div>
+                    </div>
+                </a>
+            </li>
+                  <li>
+                <a href="/set_preference_date" class="item">
+                    <div class="in text-warning">
+                        <div>Cashout Date</div>
                     </div>
                 </a>
             </li>

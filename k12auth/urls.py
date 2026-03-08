@@ -13,4 +13,13 @@ urlpatterns = [
     
     
     path('reset_pin', views.reset_pinView, name='reset_pinView'),
+    path('preference_date_successful/<str:preference_date>', views.preference_date_successfulView, name='preference_date_successfulView'),
+    path('set_preference_date', views.set_preference_dateView, name='set_preference_dateView'),
+    path('save_preference_date', views.save_preference_dateView, name='save_preference_dateView'),
+    
+    
+    path('delete_preference_Date', views.delete_preference_DateView, name='delete_preference_DateView'),
+    path('delete_preference_date', views.delete_preference_dateView, name='delete_preference_dateView'),
+    path('preference_delete_successful', views.preference_delete_successfulView, name='preference_delete_successfulView'),
+
 ]

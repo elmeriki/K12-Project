@@ -1,0 +1,83 @@
+{% load static %}
+<!doctype html>
+<html lang="en">
+{% include "../ext/header.html" %}
+<body>
+
+
+   <!-- loader -->
+    {% include "members/app_loader.html" %}
+    <!-- * loader -->
+
+
+    <!-- * App Header -->
+    {% include "members/app_header.html" %}
+    <!-- * App Header -->
+
+    <!-- App Capsule -->
+<div>
+    <div id="appCapsule">
+        <div class="section full">
+            {% if withdrawal_transaction %}
+            <ul class="listview image-listview flush">
+                {% for eachWithdrawal_transaction in withdrawal_transaction %}
+                <li class="active">
+                    {% if eachWithdrawal_transaction.donationStatus == "Pending" and request.user.is_member %}
+                    <a href="/donation_withdrawal_sucessful/{{eachWithdrawal_transaction.id}}" class="item">
+
+                    {% elif eachWithdrawal_transaction.donationStatus == "Completed" and request.user.is_member %}
+                    <a href="/donation_withdrawal_sucessful/{{eachWithdrawal_transaction.id}}" class="item">
+
+                    {% elif eachWithdrawal_transaction.donationStatus == "Pending" and request.user.is_admin %}
+                    <a href="/donation_withdrawal_sucessful/{{eachWithdrawal_transaction.id}}" class="item">
+
+                    {% else %}
+                    <a href="#" class="item">
+                    {% endif %}
+                        <div class="icon-box bg-success">
+                            <ion-icon name="arrow-up-outline"></ion-icon>
+                        </div>
+                        <div class="in">
+                            <div>
+                                <div class="mb-05"><strong>{{eachWithdrawal_transaction.donation.donationType}}</strong></div>
+                                <div class="text-danger mb-05"><b>{{eachWithdrawal_transaction.amount}} XAF</b></div>
+                                <div class="text-xsmall">{{eachWithdrawal_transaction.created_at.date}} From: {{eachWithdrawal_transaction.member.first_name}} {{eachWithdrawal_transaction.member.last_name}} <br>
+                                {% if eachWithdrawal_transaction.donationStatus == "Pending" %}
+                                    <span class="text-danger">{{eachWithdrawal_transaction.donationStatus}} </span>
+                                    {% else %}
+                                    <span class="text-success">{{eachWithdrawal_transaction.donationStatus}} </span>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    </a>
+                </li>
+
+                {% endfor %}
+            </ul>
+            {% else %}
+            <br><br>
+
+             <div class="container">
+                <div class="alert alert-outline-dark mb-1 text-center" role="alert">
+                        No withdrawals available at the moment!
+                        <br>
+                    </div>
+             </div>
+            {% endif %}
+        </div>
+</div>
+    <!-- * App Capsule -->
+
+
+    <!-- App Bottom Menu -->
+    {% include "members/app_buttom_menu.html" %}
+    {% include "members/app_modals.html" %}
+    <!-- App Bottom Menu -->
+
+
+{% include "../ext/footer.html" %}
+
+</body>
+
+</html>

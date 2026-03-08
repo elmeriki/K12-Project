@@ -1,0 +1,106 @@
+
+<!doctype html>
+<html lang="en">
+
+<!-- * App Header -->
+{% include "../ext/header.html" %}
+<!-- * App Header -->
+<body>
+
+    <!-- loader -->
+        {% include "members/app_loader.html" %}
+    <!-- * loader -->
+
+        <!-- * App Header -->
+    {% include "members/app_header.html" %}
+    <!-- * App Header -->
+    <!-- App Header -->
+
+
+    <!-- App Capsule -->
+    <div id="appCapsule">
+        <div class="section mt-2 text-center">
+        </div>
+        <div class="section mb-5 p-2">
+            <form action="/save_preference_date" method="post" onsubmit="handleSubmit(this)" autocomplete="off">
+                {% csrf_token %}
+                <div class="card">
+                    <div class="card-body">
+                        <div class="form-group basic">
+                            <div class="input-wrapper">
+                                <label class="label" for="password2">USERNAME</label>
+                                <input type="number" class="form-control" name="username" readonly value="{{request.user.username}}" id="password2" inputmode="numeric" pattern="[0-9]*" maxlength="12" autocomplete="off"
+                                    placeholder="Enter username to set date">
+                                <i class="clear-input">
+                                    <ion-icon name="close-circle"></ion-icon>
+                                </i>
+                            </div>
+                    </div>
+                   <div class="form-group basic">
+                            <div class="input-wrapper">
+                                <label class="label" for="preferenceDate">SET PREFERENCE DATE</label>
+                                <input type="date" class="form-control" name="preference_date" id="preferenceDate" 
+                                    value="{{ preference_date }}" required>
+                                <i class="clear-input">
+                                    <ion-icon name="close-circle"></ion-icon>
+                                </i>
+                            </div>
+                     </div>
+                    </div>
+                </div>
+                <br>
+                <div class="form-button transparent">
+                    {% if preferenceDateCount == 0 %}
+                    <button type="submit" class="btn btn-primary btn-block btn-lg">Save Date</button>
+                    {% else %}
+                    <button type="submit" disabled class="btn btn-primary btn-block btn-lg">Contact Admin </button>
+                    {% endif %}
+                </div>
+
+            </form>
+        </div>
+          {% if messages %}
+            {% for message in messages %}
+             <div class="alert alert-outline-primary alert-dismissible fade show" role="alert">
+              {{ message }}!
+              <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+              </div>
+            {% endfor %}
+          {% else %}
+
+          {% endif %}
+          <br />
+    </div>
+
+
+
+
+<!-- Submit Button JS code -->
+<script>
+function submitTransfer() {
+    document.getElementById("transferForm").submit();
+}
+</script>
+<!-- Submit Button JS code -->
+
+    <!-- * App Capsule -->
+ <script>
+      function handleSubmit(form) {
+        const btn = form.querySelector('button[type="submit"]')
+        btn.disabled = true
+        btn.innerText = 'Please wait...'
+      }
+    </script>
+
+
+    <!-- App Bottom Menu -->
+    {% include "members/app_buttom_menu.html" %}
+    <!-- App Bottom Menu -->
+
+
+{% include "../ext/footer.html" %}
+
+
+</body>
+
+</html>

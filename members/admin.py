@@ -7,3 +7,4 @@ from members.models import *
 admin.site.register(Account)
 admin.site.register(Transaction)
 admin.site.register(Donation)
+admin.site.register(PreferenceDate)
