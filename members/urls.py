@@ -48,9 +48,7 @@ urlpatterns = [
     path('transfer', views.transferView, name='transferView'),
     path('verify_fund_transfer', views.verify_fund_transferView, name='verify_fund_transferView'),
     path('finalise_transfer', views.finalise_transferView, name='finalise_transferView'),
-    
-    path('transfer_successful/<int:transactionId>', views.transfer_successfulView, name='transfer_successfulView'),
-   
+       
     path('donation_withdrawal_successful_confirmation/<int:withdrawalID>', views.donation_withdrawal_successfulView, name='donation_withdrawal_successfulView'),
 
 
@@ -69,11 +67,16 @@ urlpatterns = [
     path('finalise_make_withdrawal', views.finalise_make_withdrawalView, name='finalise_make_withdrawalView'),
     path('withdrawal_success/<int:withdrawalID>', views.withdrawal_successView, name='withdrawal_successView'),
 
+    path('transfer_successful/<int:sendersID>/<int:recieverID>', views.transfer_successfulView, name='transfer_successfulView'),
+
 
     path('process_withdrawal_request/<int:withdrawalID>', views.process_withdrawal_requestView, name='process_withdrawal_requestView'),
     path('finalise_withdrawal', views.finalise_withdrawalView, name='finalise_withdrawalView'),
     path('withdrawal_successful_confirmation/<int:withdrawalID>', views.withdrawal_successful_confirmationView, name='withdrawal_successful_confirmationView'),
 
     path('withdrawal_details/<int:withdrawalID>', views.withdrawal_detailsView, name='withdrawal_detailsView'),
+
+    path('change_profile_picture', views.change_profile_pictureView, name='change_profile_pictureView'),
+    path('photo_change_successful', views.photo_change_successfulView, name='photo_change_successfulView'),
 
 ]

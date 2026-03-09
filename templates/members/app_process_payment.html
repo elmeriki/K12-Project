@@ -15,11 +15,15 @@
       <div class="left">
         <a href="#" class="headerButton goBack"><ion-icon name="chevron-back-outline"></ion-icon></a>
       </div>
-      <div class="pageTitle">Payment Processing</div>
+      {% if depositCountLog == 0 %}
+      <div class="pageTitle">MAKE DEPOSIT</div>
+      {% else %}
+      <div class="pageTitle">DUPLICATE DEPOSIT</div>
+      {% endif %}
       <div class="right"></div>
     </div>
     <!-- * App Header -->
-
+{% if depositCountLog == 0 %}
     <!-- App Capsule -->
     <div id="appCapsule">
       <div class="section">
@@ -86,7 +90,19 @@
             </form>
              <br><br>
           </div>
-         
+    {% else %}
+<br><br><br><br>
+ <div class="container">
+       <p>
+            You cannot make another deposit if your first deposit has not yet been verified and allocated to your account. Please contact the admin for assistance if needed.
+            <br /><br />
+          </p>
+ </div>
+      <div class="col-12">
+            <a href="/members_dashboard" class="btn btn-lg btn-outline-secondary btn-block">Close</a>
+          </div>
+
+    {% endif %}
           <script>
             function handleSubmit(form) {
               const btn = form.querySelector('button[type="submit"]')

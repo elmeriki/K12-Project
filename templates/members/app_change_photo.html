@@ -1,0 +1,71 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+  {% include '../ext/header.html' %}
+  <body>
+    <!-- loader -->
+{% include 'members/app_loader.html' %} 
+    <!-- * loader -->
+
+    <!-- * App Header -->
+    {% include 'members/app_header.html' %}
+    <!-- * App Header -->
+
+    <!-- App Capsule -->
+    <div id="appCapsule">
+      <div class="section mt-2 text-center">
+        <h1>CHANGE PROFILE POHOTO</h1>
+        <p class="">Your profile picture will be reviewed before it is updated. Please upload a clear and appropriate image to avoid rejection.</p>
+      </div>
+
+      <div class="section mb-5 p-2">
+        <form action="/change_profile_picture" enctype="multipart/form-data" id="registerForm" method="post" onsubmit="handleSubmit(this)" autocomplete="off">
+          {% csrf_token %}
+          <div class="card">
+            <div class="card-body">
+              <div class="custom-file-upload" id="fileUpload1">
+                <input type="file" id="fileuploadInput" name="profile" required accept=".png, .jpg, .jpeg" />
+                <label for="fileuploadInput">
+                  <span>
+                    <strong>
+                      <ion-icon name="arrow-up-circle-outline"></ion-icon>
+                      <i>UPLOAD PROFILE PHOTO</i>
+                    </strong>
+                  </span>
+                </label>
+              </div>
+            </div>
+          </div>
+          <br />
+          <br />
+
+          {% if messages %}
+            {% for message in messages %}
+             <div class="alert alert-outline-primary alert-dismissible fade show" role="alert">
+              {{ message }}!
+              <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+              </div>
+            {% endfor %}
+          {% else %}
+
+          {% endif %}
+          <br />
+          <button type="submit" disabled name="submutbutton" class="btn btn-primary btn-block btn-lg">CHANGE</button>
+        </form>
+      </div>
+    </div>
+    <!-- * App Capsule -->
+    <script>
+      function handleSubmit(form) {
+        const btn = form.querySelector('button[type="submit"]')
+        btn.disabled = true
+        btn.innerText = 'Please wait...'
+      }
+    </script>
+    <!-- App Bottom Menu -->
+    {% include 'members/app_buttom_menu.html' %}
+    <!-- App Bottom Menu -->
+
+    {% include '../ext/footer.html' %}
+  </body>
+</html>

@@ -122,8 +122,8 @@ swappable = 'AUTH_USER_MODEL'
 # EMAIL SEDNING SETUP
 EMAIL_USE_TLS = True
 EMAIL_PORT = 587
-EMAIL_HOST = 'mail.k12.com'
-EMAIL_HOST_USER = 'info@k12.com'
+EMAIL_HOST = 'mail.k12portal.online'
+EMAIL_HOST_USER = 'no_reply@k12portal.online'
 EMAIL_HOST_PASSWORD ='Fifa@2020'
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 
@@ -151,6 +151,6 @@ DEFAULT_AUTO_FIELD='django.db.models.AutoField'
 
 
 SESSION_EXPIRE_AT_BROWSER_CLOSE=True 
-SESSION_COOKIE_AGE = 100000                   
+SESSION_COOKIE_AGE = 10000                  
 SESSION_SAVE_EVERY_REQUEST =True     
 

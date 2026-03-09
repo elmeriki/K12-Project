@@ -1,0 +1,42 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+  {% include '../ext/header.html' %}
+  <body>
+    <!-- loader -->
+{% include 'members/app_loader.html' %} 
+    <!-- * loader -->
+
+    <!-- * App Header -->
+    {% include 'members/app_header.html' %}
+    <!-- * App Header -->
+
+    <!-- App Capsule -->
+    <div id="appCapsule">
+      <div class="section mt-2 text-center">
+        <h1>PROFILE PROFILE CHANGED</h1>
+        <br>
+        <p class="">
+This serves to confirm that your profile photo has been updated successfully. You can now view it on your profile.
+        </p>
+      </div>
+      </div>
+        <div class="col-12">
+              <a href="/members_dashboard" class="btn btn-lg btn-outline-secondary btn-block">Close</a>
+            </div>
+    </div>
+    <!-- * App Capsule -->
+    <script>
+      function handleSubmit(form) {
+        const btn = form.querySelector('button[type="submit"]')
+        btn.disabled = true
+        btn.innerText = 'Please wait...'
+      }
+    </script>
+    <!-- App Bottom Menu -->
+    {% include 'members/app_buttom_menu.html' %}
+    <!-- App Bottom Menu -->
+
+    {% include '../ext/footer.html' %}
+  </body>
+</html>

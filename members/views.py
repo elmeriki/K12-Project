@@ -26,6 +26,7 @@ from django.db.models import F
 from decimal import Decimal
 
 
+@login_required(login_url="/login")
 def app_settingView(request):
     if request.user.is_authenticated:
         username = request.user.username
@@ -38,7 +39,7 @@ def app_settingView(request):
         return redirect('/login')
 
  
-
+@login_required(login_url="/login")
 def member_listView(request):
     if request.user.is_authenticated and request.user.is_member or request.user.is_admin:
         members_instance=User.objects.filter( Q(is_member=True,is_staff=False) | Q(is_member=False,is_staff=False) )
@@ -50,6 +51,7 @@ def member_listView(request):
     else:
         return redirect('/login')
 
+@login_required(login_url="/login")
 def unactivated_membersView(request):
     if request.user.is_authenticated and request.user.is_admin:
         members_instance=User.objects.filter(is_member=False,is_staff=False)
@@ -60,11 +62,12 @@ def unactivated_membersView(request):
     else:
         return redirect('/login')
 
+@login_required(login_url="/login")
 def transactionsView(request):
     if request.user.is_authenticated:
         username = request.user.username
         members_instance=User.objects.get(username=username)
-        transaction = Transaction.objects.filter(member=members_instance)
+        transaction = Transaction.objects.filter(member=members_instance).order_by('-created_at')[:20]
         data = {
             'members_instance':members_instance,
             'transaction':transaction
@@ -74,7 +77,7 @@ def transactionsView(request):
         return redirect('/login')
     
 
-
+@login_required(login_url="/login")
 def donation_withdrawalView(request):
     if request.user.is_authenticated:
         username = request.user.username
@@ -87,7 +90,7 @@ def donation_withdrawalView(request):
     else:
         return redirect('/login')
     
-    
+@login_required(login_url="/login")
 def process_donation_withdrawalView(request):
     if request.user.is_authenticated:
         withdrawal_transaction = DonationWithdrawal.objects.filter(donationStatus="Pending").order_by('-created_at')[:20]
@@ -98,7 +101,7 @@ def process_donation_withdrawalView(request):
     else:
         return redirect('/login')
     
-@login_required
+@login_required(login_url="/login")
 def donations_logView(request,donationId):
     if request.user.is_authenticated:
         donationInstance=Donation.objects.get(id=donationId)
@@ -110,7 +113,7 @@ def donations_logView(request,donationId):
     else:
         return redirect('/login')
     
-@login_required
+@login_required(login_url="/login")
 def incoming_paymentView(request):
     if request.user.is_authenticated and request.user.is_admin:
         transaction = Transaction.objects.filter(transactionStatus="Verified")[:10]
@@ -122,7 +125,7 @@ def incoming_paymentView(request):
         return redirect('/login')
     
     
-@login_required
+@login_required(login_url="/login")
 def withdrawalsView(request):
     if request.user.is_authenticated and request.user.is_admin:
         withdrawals = Withdrawal.objects.order_by('-created_at')[:10]
@@ -134,7 +137,7 @@ def withdrawalsView(request):
         return redirect('/login')
     
     
-@login_required
+@login_required(login_url="/login")
 def payment_successfulView(request,amount,transactionReference):
     if request.user.is_authenticated:
         username = request.user.username
@@ -148,20 +151,20 @@ def payment_successfulView(request,amount,transactionReference):
     else:
         return redirect('/login')
 
-@login_required
-def transfer_successfulView(request,transactionId):
-    if request.user.is_authenticated:
-        username = request.user.username
-        members_instance=User.objects.get(username=username)
-        data = {
-            'members_instance':members_instance,
-        }
-        return render(request,'members/app_transfer_success.html',context=data)
-    else:
-        return redirect('/login')
+# @login_required
+# def transfer_successfulView(request,transactionId):
+#     if request.user.is_authenticated:
+#         username = request.user.username
+#         members_instance=User.objects.get(username=username)
+#         data = {
+#             'members_instance':members_instance,
+#         }
+#         return render(request,'members/app_transfer_success.html',context=data)
+#     else:
+#         return redirect('/login')
     
     
-@login_required
+@login_required(login_url="/login")
 def donation_withdrawal_successfulView(request,withdrawalID):
     if request.user.is_authenticated:
         donation_withdrawal_transaction=DonationWithdrawal.objects.get(id=withdrawalID)
@@ -173,7 +176,7 @@ def donation_withdrawal_successfulView(request,withdrawalID):
         return redirect('/login')
     
     
-@login_required
+@login_required(login_url="/login")
 def withdrawal_successful_confirmationView(request,withdrawalID):
     if request.user.is_authenticated:
         withdrawal_transaction=Withdrawal.objects.get(id=withdrawalID)
@@ -185,7 +188,7 @@ def withdrawal_successful_confirmationView(request,withdrawalID):
         return redirect('/login')
     
     
-@login_required
+@login_required(login_url="/login")
 def saving_successfulView(request,transactionId):
     if request.user.is_authenticated:
         selectedSucessfulTransaction=Transaction.objects.get(id=transactionId)
@@ -196,7 +199,7 @@ def saving_successfulView(request,transactionId):
     else:
         return redirect('/login')
     
-@login_required
+@login_required(login_url="/login")
 def saving_unsuccessfulView(request,transactionId):
     if request.user.is_authenticated:
         selectedSucessfulTransaction=Transaction.objects.get(id=transactionId)
@@ -207,6 +210,7 @@ def saving_unsuccessfulView(request,transactionId):
     else:
         return redirect('/login')
 
+@login_required(login_url="/login")
 def transactions_detailsView(request,transactionid):
     if request.user.is_authenticated:
         username = request.user.username
@@ -220,6 +224,7 @@ def transactions_detailsView(request,transactionid):
     else:
         return redirect('/login')
 
+@login_required(login_url="/login")
 def withdrawal_detailsView(request,withdrawalID):
     if request.user.is_authenticated:
         username = request.user.username
@@ -232,7 +237,8 @@ def withdrawal_detailsView(request,withdrawalID):
         return render(request,'members/withdrawal_detail.html',context=data)
     else:
         return redirect('/login')
-    
+
+@login_required(login_url="/login")
 def activate_accountView(request,select_username):
     if request.user.is_authenticated:
         select_members_instance=User.objects.get(username=select_username)
@@ -243,7 +249,7 @@ def activate_accountView(request,select_username):
     else:
         return redirect('/login')
     
-
+@login_required(login_url="/login")
 def member_detailsView(request,select_username):
     if request.user.is_authenticated:
         select_members_instance=User.objects.get(username=select_username)
@@ -256,6 +262,7 @@ def member_detailsView(request,select_username):
     
     
 @transaction.atomic
+@login_required(login_url="/login")
 def activate_member_accountView(request):
     if request.user.is_authenticated and request.method == "POST" and request.POST['fname'] and request.POST['lname'] and request.POST['username'] and request.POST['designation']:
         fname=request.POST['fname']
@@ -287,6 +294,7 @@ def activate_member_accountView(request):
     
     
 @transaction.atomic
+@login_required(login_url="/login")
 def transfer_donation_View(request):
     if request.user.is_authenticated and request.method == "POST" and request.POST['selectedDonation'] and request.POST['momoNumber'] and request.POST['momoName'] and request.POST['with_amount']:
         selectedDonationID=request.POST['selectedDonation']
@@ -326,11 +334,13 @@ def verify_payment_amountView(request):
         amount=int(request.POST['amount'])
         reference=request.POST['reference']
         username = request.user.username
-        username_instance = User.objects.get(username=username)
+        username_instance = User.objects.get(username=username) 
+        depositCountLog = Transaction.objects.filter(member=username_instance,transactionType="Deposit",transactionStatus="Initiated").count()
         data = {
             "amount":amount,
             "reference":reference,
-            "username_instance":username_instance
+            "username_instance":username_instance,
+            "depositCountLog":depositCountLog
         }
         return render(request,'members/app_process_payment.html',context=data)
 
@@ -371,43 +381,10 @@ def verify_fund_transferView(request):
     else:
         return redirect('/transfer')
     
-    
-# @transaction.atomic
-# def finalise_transferView(request):
-#     if request.user.is_authenticated and request.method == "POST" and request.POST['amount'] and request.POST['username']:
-#         amount=int(request.POST['amount'])
-#         memberToRecieveMoney=request.POST['username']
-#         username = request.user.username
-#         RecieverInstance = User.objects.get(username=memberToRecieveMoney)
-#         sendingInstance = User.objects.get(username=username)
-#         RecieverInstanceBalance = Account.objects.filter(member=RecieverInstance).values_list('memberBalance', flat=True).first()
-#         senderInstanceBalance = Account.objects.filter(member=sendingInstance).values_list('memberBalance', flat=True).first()
-       
-#         if amount > senderInstanceBalance:
-#             messages.info(request,"Insufficient Funds")
-#             return redirect('/verify_fund_transfer')
-        
-#         if senderInstanceBalance < amount:
-#             newSendersAccountBalance = senderInstanceBalance - amount
-#             newReceieversAccountBalance = RecieverInstanceBalance + amount
-            
-#             updateSendersAccount = Account.objects.get(member=sendingInstance)
-#             updateSendersAccount.memberBalance = newSendersAccountBalance
-#             updateSendersAccount.save()
-            
-#             updateRecieversAccount = Account.objects.get(member=RecieverInstance)
-#             updateRecieversAccount.memberBalance = newReceieversAccountBalance
-#             updateRecieversAccount.save()
-            
-#             data = {
-#                "sendingInstance":sendingInstance,
-#                 "RecieverInstance":RecieverInstance
-#             }
-#             return render(request,'members/app_transfer_success.html',context=data)
-#     else:
-#         return redirect('/verify_fund_transfer')
 
 
+
+@login_required(login_url="/login")
 @transaction.atomic
 def finalise_transferView(request):
     if not request.user.is_authenticated or request.method != "POST":
@@ -453,13 +430,9 @@ def finalise_transferView(request):
     recordTransactionForReciever=Transaction(member=receiver,amount=amount,transactionType="Recieving",transactionReference="Incoming",transactionStatus="Successful")
     recordTransactionForReciever.save()
     
-    data = {
-        "sendingInstance": sender,
-        "RecieverInstance": receiver
-    }
+    return redirect(f'/transfer_successful/{recordTransactionForSender.id}/{recordTransactionForReciever.id}')
 
-    return render(request, 'members/app_transfer_success.html', context=data)
-
+@login_required(login_url="/login")
 @transaction.atomic
 def upload_podView(request):
     if request.user.is_authenticated and request.method == "POST" and request.POST['amount'] and request.POST['reference']:
@@ -478,7 +451,7 @@ def upload_podView(request):
         return render(request,'members/app_upload_pods.html',context=data)
     
     
-    
+@login_required(login_url="/login")
 @transaction.atomic
 def submite_transactionView(request):
     if request.user.is_authenticated and request.method == "POST" and request.POST['username'] and request.POST['amount'] and request.POST['reference']:
@@ -555,6 +528,7 @@ def submite_transactionView(request):
 #         return redirect('/upload_pod')
     
     
+@login_required(login_url="/login")
 @transaction.atomic
 def submit_transactionView(request):
     if not (request.user.is_authenticated and request.user.is_member and request.method == "POST"):
@@ -606,7 +580,48 @@ def submit_transactionView(request):
 
     return redirect(f'/payment_successful/{amount}/{reference}')
     
+@login_required(login_url="/login")
+@transaction.atomic
+def change_profile_pictureView(request):
+    if not (request.user.is_authenticated and request.user.is_member and request.method == "POST"):
+        messages.info(request, "Uploading Profile Pic could not be completed, Please try again")
+        return redirect('/change_photo')
+    user = request.user
+    profile = request.FILES.get('profile')
+
+    if not profile:
+        messages.info(request, "Uploading profile photo could not be completed, Please try again")
+        return redirect('/change_photo')
+
+    # Validate extension
+    allowed_extensions = ['.png', '.jpg', '.jpeg']
+    ext = os.path.splitext(profile.name)[1].lower()
+
+    if ext not in allowed_extensions:
+        messages.info(request, "Only PNG, JPG, and JPEG files are allowed.")
+        return redirect('/upload_pod')
+
+    image = Image.open(profile)
+
+    if image.mode in ("RGBA", "P"):
+        image = image.convert("RGB")
+
+    max_size = (800, 800)
+    image.thumbnail(max_size)
+
+    buffer = BytesIO()
+    image.save(buffer, format="JPEG", quality=60, optimize=True)
+
+    file_name = f"transactions/{user.first_name}_{user.last_name}.jpg"
+    file_path = default_storage.save(file_name, ContentFile(buffer.getvalue()))
+
+    loginUserInstance = User.objects.get(username=user.username)
+    loginUserInstance.profilePicture=file_path
+    loginUserInstance.save()
     
+    return redirect(f'/photo_change_successful')
+    
+@login_required(login_url="/login")
 @transaction.atomic
 def final_donation_withdrawalView(request):
     if not (request.user.is_authenticated and request.user.is_admin and request.method == "POST"):
@@ -669,7 +684,7 @@ def final_donation_withdrawalView(request):
     return redirect(f'/donation_withdrawal_successful_confirmation/{donation_id}')
 
 
-
+@login_required(login_url="/login")
 @transaction.atomic
 def finalise_withdrawalView(request):
     if not (request.user.is_authenticated and request.user.is_admin and request.method == "POST"):
@@ -747,6 +762,7 @@ def finalise_withdrawalView(request):
         return redirect(f'/withdrawal_successful_confirmation/{withdrawal_id}') 
 
     
+@login_required(login_url="/login")
 def new_donationView(request):
     if request.user.is_authenticated:
         username = request.user.username
@@ -758,6 +774,7 @@ def new_donationView(request):
     else:
         return redirect('/login')
     
+@login_required(login_url="/login")
 def donationsView(request):
     if request.user.is_authenticated:
         donations_list=Donation.objects.filter()
@@ -768,6 +785,7 @@ def donationsView(request):
     else:
         return redirect('/login')
     
+@login_required(login_url="/login")
 @transaction.atomic
 def create_new_donationView(request):
     if request.user.is_authenticated and request.method == "POST" and request.POST['username'] and request.POST['title'] and request.POST['description'] and request.POST['amount']:
@@ -799,7 +817,7 @@ def create_new_donationView(request):
         return redirect('/new_donation')
     
     
-    
+@login_required(login_url="/login")
 @transaction.atomic
 def verify_donation_confirmationView(request,donationId):
     if request.user.is_authenticated:
@@ -813,6 +831,7 @@ def verify_donation_confirmationView(request,donationId):
         return render(request,'members/app_donation_confirmation.html',context=data)
    
    
+@login_required(login_url="/login")
 @transaction.atomic
 def close_donationView(request,donationId):
     if request.user.is_authenticated:
@@ -822,6 +841,7 @@ def close_donationView(request,donationId):
        return redirect(f'/verify_donation_confirmation/{donationId}') 
 
 
+@login_required(login_url="/login")
 @transaction.atomic
 def make_donationView(request,donationId):
     if request.user.is_authenticated:
@@ -840,6 +860,7 @@ def make_donationView(request,donationId):
     else:
         return render(request,'members/app_make_donation.html',context=data)
     
+@login_required(login_url="/login")
 @transaction.atomic
 def transferView(request):
     if request.user.is_authenticated:
@@ -847,7 +868,8 @@ def transferView(request):
     else:
         return render(request,'members/app_transfer.html')
     
-    
+
+@login_required(login_url="/login")
 @transaction.atomic
 def transfer_donationView(request,donationID):
     if request.user.is_authenticated:
@@ -859,6 +881,7 @@ def transfer_donationView(request,donationID):
     else:
         return render(request,'members/app_transfer_donation.html')
     
+@login_required(login_url="/login")
 @transaction.atomic
 def make_donation_View(request,donationId):
     if request.user.is_authenticated and request.method == "POST" and request.POST['donationAmount'] and request.POST['reference']:
@@ -871,11 +894,11 @@ def make_donation_View(request,donationId):
 
         if donationAmount > membersBalance:
             messages.info(request, "Insufficient account balance to process the donation")
-            return redirect(f'/make_donation/{donationId}')
+            return redirect(f'/make_donation/{donationInstance.id}')
         
         if not request.POST.get('reference'):
             messages.info(request, "Enter a valid donation reference")
-            return redirect(f'/make_donation/{donationId}')
+            return redirect(f'/make_donation/{donationInstance.id}')
         
         if membersBalance >= donationAmount:
             newMembersBalance = membersBalance - donationAmount
@@ -901,6 +924,7 @@ def make_donation_View(request,donationId):
     
     
     
+@login_required(login_url="/login")
 def donation_sucessfulView(request,donationId):
     if request.user.is_authenticated:
         donationTransaction = DonationTransaction.objects.get(id=donationId)
@@ -910,7 +934,8 @@ def donation_sucessfulView(request,donationId):
         return render(request,'members/app_donation_success.html',context=data)
     else:
         return redirect('/login')
-    
+
+@login_required(login_url="/login")
 def donation_withdrawal_sucessfulView(request,withdrawalID):
     if request.user.is_authenticated:
         donationwithdrawalTransaction = DonationWithdrawal.objects.get(id=withdrawalID)
@@ -922,6 +947,7 @@ def donation_withdrawal_sucessfulView(request,withdrawalID):
         return redirect('/login')
     
     
+@login_required(login_url="/login")
 def process_withdrawal_requestView(request,withdrawalID):
     if request.user.is_authenticated:
         withdrawalTransaction = Withdrawal.objects.get(id=withdrawalID)
@@ -933,6 +959,7 @@ def process_withdrawal_requestView(request,withdrawalID):
         return redirect('/login')
     
     
+@login_required(login_url="/login")
 def withdrawal_successView(request,withdrawalID):
     if request.user.is_authenticated:
         withdrawalTransaction = Withdrawal.objects.get(id=withdrawalID)
@@ -943,7 +970,29 @@ def withdrawal_successView(request,withdrawalID):
     else:
         return redirect('/login')
     
+
+@login_required(login_url="/login")
+def transfer_successfulView(request,sendersID,recieverID):
+    if request.user.is_authenticated:
+        recieverInstance = Transaction.objects.get(id=recieverID)
+        senderInstance = Transaction.objects.get(id=sendersID)
+        data = {
+            'recieverInstance':recieverInstance,
+            'senderInstance':senderInstance
+        }
+        return render(request,'members/app_transfer_success.html',context=data)
+    else:
+        return redirect('/login')
+
+@login_required(login_url="/login")
+def photo_change_successfulView(request):
+    if request.user.is_authenticated:
+        return render(request,'members/app_change_photo_success.html')
+    else:
+        return redirect('/login')
     
+    
+@login_required(login_url="/login")
 def make_withdrawalView(request):
     if request.user.is_authenticated:
         loginUserInstance = request.user
@@ -959,6 +1008,7 @@ def make_withdrawalView(request):
         return redirect('/login')
     
     
+@login_required(login_url="/login")
 def reconcile_transactionView(request,transactionId):
     if request.user.is_authenticated:
         selectedTransactionToReconcile=Transaction.objects.get(id=transactionId)
@@ -971,6 +1021,7 @@ def reconcile_transactionView(request,transactionId):
     
     
     
+@login_required(login_url="/login")
 @transaction.atomic
 def reconcile_transaction_View(request,transactionId):
     if request.user.is_authenticated and request.method == "POST" and request.POST['username'] and request.POST['amount'] and request.POST['reference'] and request.POST['decision']:
@@ -1013,6 +1064,7 @@ def reconcile_transaction_View(request,transactionId):
     
     
     
+@login_required(login_url="/login")
 @transaction.atomic
 def finalise_make_withdrawalView(request):
     if not (request.user.is_authenticated and request.user.is_member and request.method == "POST"):

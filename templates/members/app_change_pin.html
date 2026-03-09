@@ -23,13 +23,14 @@
         <div class="section mt-2 text-center">
         </div>
         <div class="section mb-5 p-2">
-            <form action="#" method="post" autocomplete="off">
+            <form action="/change_pin" onsubmit="handleSubmit(this)" method="post" autocomplete="off">
+                {% csrf_token %}
                 <div class="card">
                     <div class="card-body">
                         <div class="form-group basic">
                             <div class="input-wrapper">
                                 <label class="label" for="email1">Phone Number</label>
-                                <input type="text" class="form-control" id="email1" value="{{request.user.username}}" readonly>
+                                <input type="text" class="form-control" id="email1" name="username" value="{{request.user.username}}" readonly>
                                 <i class="clear-input">
                                     <ion-icon name="close-circle"></ion-icon>
                                 </i>
@@ -39,7 +40,7 @@
                         <div class="form-group basic">
                             <div class="input-wrapper">
                                 <label class="label" for="password2">PIN</label>
-                                <input type="password" class="form-control" name="password" id="password2" inputmode="numeric" pattern="[0-9]*" maxlength="5" autocomplete="off"
+                                <input type="password" class="form-control" name="password" id="password2" inputmode="numeric" min="5" pattern="[0-9]*" maxlength="5" required autocomplete="off"
                                     placeholder="Enter New 5 Digit PIN">
                                 <i class="clear-input">
                                     <ion-icon name="close-circle"></ion-icon>
@@ -50,8 +51,19 @@
                     </div>
                 </div>
                 <br>
+          {% if messages %}
+            {% for message in messages %}
+             <div class="alert alert-outline-primary alert-dismissible fade show" role="alert">
+              {{ message }}!
+              <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+              </div>
+            {% endfor %}
+          {% else %}
+
+          {% endif %}
+          <br>
                 <div class="form-button transparent">
-                    <button type="submit" class="btn btn-warning btn-block btn-lg">Save Changes</button>
+                    <button type="submit" class="btn btn-warning btn-block btn-lg">Chane PIN</button>
                 </div>
 
             </form>
@@ -61,6 +73,13 @@
     <!-- * App Capsule -->
 
 
+          <script>
+            function handleSubmit(form) {
+              const btn = form.querySelector('button[type="submit"]')
+              btn.disabled = true
+              btn.innerText = 'Please wait...'
+            }
+          </script>
 
     <!-- App Bottom Menu -->
     {% include "members/app_buttom_menu.html" %}
