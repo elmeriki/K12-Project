@@ -58,7 +58,7 @@
               <div class="form-group basic">
                 <div class="input-wrapper">
                   <label class="label" for="email1">MOMO NUMBER</label>
-                  <input type="number" class="form-control" id="email1" name="recieverMomoNumber" readonly value="{{withdrawalTransaction.momoNumber }}" />
+                  <input type="number" class="form-control" id="email1" name="recieverMomoNumber" readonly value="{{withdrawalTransaction.momoNumber}}" />
                   <i class="clear-input"><ion-icon name="close-circle"></ion-icon></i>
                 </div>
               </div>
@@ -66,7 +66,7 @@
               <div class="form-group basic">
                 <div class="input-wrapper">
                   <label class="label" for="email1">STATUS</label>
-                  <input type="text" class="form-control" id="email1" name="withdrawalStatus" readonly value="{{withdrawalTransaction.withdrawalStatus }}" />
+                  <input type="text" class="form-control" id="email1" name="withdrawalStatus" readonly value="{{withdrawalTransaction.withdrawalStatus}}" />
                   <i class="clear-input"><ion-icon name="close-circle"></ion-icon></i>
                 </div>
               </div>
@@ -83,9 +83,9 @@
                   <label class="label" for="account2d">DECISION</label>
                   <select class="form-control custom-select" name="decision" id="account2d" required>
                     <option value="" disabled selected>Select Decision</option>
-                    <option value="Rejected">Rejected</option>
-                    <option value="Fraud">Fraud</option>
-                    <option value="Successful">Successful</option>
+                    <option value="Rejected">REJECTED</option>
+                    <option value="Fraud">FRAUD</option>
+                    <option value="Successful">SUCCESSFUL</option>
                   </select>
                 </div>
             </div>
@@ -107,7 +107,7 @@
               </center>
             </div>
           </div>
-          <br />
+          
           {% if messages %}
             {% for message in messages %}
              <div class="alert alert-outline-primary alert-dismissible fade show" role="alert">

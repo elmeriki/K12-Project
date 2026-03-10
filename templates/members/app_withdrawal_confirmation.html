@@ -12,7 +12,7 @@
       {% comment %} <div class="left">
         <a href="#" class="headerButton goBack"><ion-icon name="home-outline"></ion-icon></a>
       </div> {% endcomment %}
-      <div class="pageTitle">Withdrawal Confirmation</div>
+      <div class="pageTitle">WITHDRAWAL CONFIRMATION</div>
       <div class="right">
         <a href="#" class="headerButton"><ion-icon name="checkmark-circle-outline"></ion-icon></a>
       </div>
@@ -50,18 +50,18 @@
           </li>
           <li>
             <span>Status</span>
-            <strong class="text-danger">{{withdrawal_transaction.withdrawalStatus}}</strong>
+            <strong class="text-danger">{{withdrawal_transaction.withdrawalStatus | upper}}</strong>
           </li>
             <li>
             <span>Date</span>
             <strong>{{withdrawal_transaction.created_at.date}}</strong>
           </li>
             <li>
-            <span class="text-danger">UPLOADED POP</span>
+            <span class="text-danger">UPLOADED SCREENSHOT</span>
 
           </li>
                 <div class="custom-file-upload" id="fileUpload1">
-                  {% if withdrawal_transaction.PODs %}
+                  {% if withdrawal_transaction.POPs %}
                       <img src="{{ withdrawal_transaction.POPs.url }}" alt="">
                   {% endif %}
                 <label for="fileuploadInput">
@@ -69,7 +69,7 @@
               </div>
         </ul>
         <br />
-        <a href="/members_dashboard" class="btn btn-primary btn-block btn-lg">FINISH</a>
+        <a href="/members_dashboard" class="btn btn-primary btn-block btn-lg">CLOSE</a>
       </div>
     </div>
     <!-- * App Capsule -->

@@ -6,7 +6,19 @@
             </a>
         </div>
         <div class="pageTitle">
-            Members Profile
+            {% if "/donations" in request.path %}
+            DONATIONS
+            {% elif "/member_list" in request.path %}
+            MEMBERS
+            {% elif "/app_setting" in request.path %}
+            MY PROFILE
+            {% elif "/transactions" in request.path %}
+            TRANSACTIONS
+            {% elif "/donation_withdrawal" in request.path %}
+            DONATION WITHDRAWALS
+            {% else %}
+            PERSONAL
+            {% endif %}
         </div>
         <div class="right">
             <a href="/transactions" class="headerButton">
@@ -14,4 +26,5 @@
             </a>
         </div>
     </div>
-    <!-- * App Header -->
+    <!-- * 
+        App Header -->
