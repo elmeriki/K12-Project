@@ -19,7 +19,12 @@ MAIN_GROUP_NUMBER = "650065760"
 KONTRIMAN_MTN_NUMBER = "677398252"
 KONTRIMAN_ORANGE_CODE = "815752"
 
-# Application definition
+
+# Mailjet credentials
+MAILJET_API_KEY = '872d27df7562262acdeab75013e79b95'
+MAILJET_API_SECRET = 'a2b6bc70877ac1e8880d2694256cae4c'
+DEFAULT_FROM_EMAIL = 'no_reply@k12portal.online'
+DEFAULT_FROM_NAME = 'GHS KAKE 2012 BATCH'
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -119,13 +124,6 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 AUTH_USER_MODEL = 'k12auth.User'
 swappable = 'AUTH_USER_MODEL'
 
-# EMAIL SEDNING SETUP
-EMAIL_USE_TLS = True
-EMAIL_PORT = 587
-EMAIL_HOST = 'mail.k12portal.online'
-EMAIL_HOST_USER = 'no_reply@k12portal.online'
-EMAIL_HOST_PASSWORD ='Fifa@2020'
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 
 
 # Static files (CSS, JavaScript, Images)

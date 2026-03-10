@@ -17,6 +17,9 @@ import threading
 from k12auth.models import User
 from members.models import *
 from django.conf import settings
+from mailjet_rest import Client as MailjetClient  # Alias for the Client class
+
+
 
 def welcome(request):
     if request.user.is_authenticated:
@@ -99,6 +102,7 @@ def preference_delete_successfulView(request):
 def change_photoView(request):
     return render(request,'members/app_change_photo.html')
 
+
 @transaction.atomic
 def register_a_memberView(request):
     if request.method == "POST" and request.POST['fname'] and request.POST['lname'] and request.POST['email'] and request.POST['phone'] and request.POST['password']:
@@ -138,7 +142,30 @@ def register_a_memberView(request):
             
             create_new_members_account = Account(member=create_new_member_account,accountNumber=phone)
             create_new_members_account.save()
-            
+    
+            mailjet = MailjetClient(auth=(settings.MAILJET_API_KEY, settings.MAILJET_API_SECRET), version='v3.1')
+            data = {
+                'Messages': [{
+                    "From": {"Email": settings.DEFAULT_FROM_EMAIL, "Name": settings.DEFAULT_FROM_NAME},
+                    "To": [{"Email": email, "Name": fname}],
+                    "Subject": "K12 Registration Confirmation",
+                    "HTMLPart": f'''
+                    <p>Dear <strong>{fname}</strong>,</p>
+                    <p>
+                        We are pleased to confirm that a new account has been created for the {settings.DEFAULT_FROM_NAME}. 
+                        The account is currently under verification. Once the verification process is completed, your account will be activated.
+                    </p>
+                    <br>
+                    <hr>
+                    <p><strong>CONFIDENTIALITY NOTICE:</strong></p>
+                    <p>
+                        This email and any attachments are confidential and intended for the named recipient only. 
+                        If you received this message in error, please notify the sender immediately and delete it. 
+                        Do not copy, disclose, or use any part of this message. Please note that internet communications may not be secure or virus-free.
+                    </p>
+                    '''}]
+            }
+            mailjet.send.create(data=data)
             messages.info(request,"Account created! Verification is pending before it becomes active")
             return redirect('/register')
         else:
@@ -172,7 +199,6 @@ def change_pinView(request):
 
 
 @transaction.atomic
-@login_required(login_url="/login")
 def members_loginView(request):
     if request.method == "POST":
         username = request.POST.get('username')

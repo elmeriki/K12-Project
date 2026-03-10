@@ -33,8 +33,8 @@ transactionType (Savings, Trouble Funds,Donation,Transfer)
 Main Admin which authorise everyone
 Admin (650065760)
 =================
-User1 (650065761) Joan Gomba
-User2 (650065762) Mukete
+User1 (650065761) Meriki
+User2 (650065762) Paul
 User4 (650065764) Linda
 User5 (650065765) kelvin
 User6 (650065766) Florence

@@ -17,7 +17,7 @@
             </a>
         </div> {% endcomment %}
         <div class="pageTitle">
-            Withdrawal Confirmation
+            WITHDRAWAL CONFIRMATION
         </div>
         <div class="right">
             <a href="#" class="headerButton">
@@ -39,20 +39,20 @@
                        <ion-icon name="checkmark-circle"></ion-icon>
                     </div>
                 </div>
-                <h3 class="text-center mt-2">Withdrawal Initiated Successful</h3>
+                <h3 class="text-center mt-2">WITHDRAWAL INITIATED</h3>
             </div>
 
             <ul class="listview simple-listview no-space mt-3">
                 <li>
                     <span>Status</span>
-                    <strong>{{withdrawalTransaction.withdrawalStatus}}</strong>
+                    <strong class="text-danger">{{withdrawalTransaction.withdrawalStatus | upper}}</strong>
                 </li>
                 <li>
-                    <span>Momo Number</span>
+                    <span>Recieving Number</span>
                     <strong>{{withdrawalTransaction.momoNumber}}</strong>
                 </li>
                   <li>
-                    <span>Momo Name</span>
+                    <span>MoMo Name</span>
                     <strong>{{withdrawalTransaction.momoName}}</strong>
                 </li>
                 <li>
@@ -69,8 +69,8 @@
                 </li>
             </ul>
             <br><br><br>
-        <a href="/members_dashboard" class="btn btn-success btn-block btn-lg">
-            FINISH
+        <a href="/members_dashboard" class="btn btn-dark btn-block btn-lg">
+            CLOSE
         </a>
         </div>
     </div>

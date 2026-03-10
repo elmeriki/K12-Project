@@ -138,14 +138,11 @@ def withdrawalsView(request):
     
     
 @login_required(login_url="/login")
-def payment_successfulView(request,amount,transactionReference):
+def payment_successfulView(request,transactionID):
     if request.user.is_authenticated:
-        username = request.user.username
-        members_instance=User.objects.get(username=username)
+        transactions = Transaction.objects.get(id=transactionID)
         data = {
-            'members_instance':members_instance,
-            'amount':amount,
-            'transactionReference':transactionReference,
+            'transactions':transactions,
         }
         return render(request,'members/app_deposit_success.html',context=data)
     else:
@@ -570,15 +567,16 @@ def submit_transactionView(request):
     file_name = f"transactions/{username}_{reference}.jpg"
     file_path = default_storage.save(file_name, ContentFile(buffer.getvalue()))
 
-    Transaction.objects.create(
+    transaction = Transaction.objects.create(
         member=request.user,
         amount=amount,
         transactionReference=reference,
         PODs=file_path,
         transactionType="Deposit",
-        transactionStatus="Initiated")
-
-    return redirect(f'/payment_successful/{amount}/{reference}')
+        transactionStatus="Initiated"
+    )
+    transaction_id = transaction.id
+    return redirect(f'/payment_successful/{transaction_id}')
     
 @login_required(login_url="/login")
 @transaction.atomic
@@ -846,17 +844,16 @@ def close_donationView(request,donationId):
 def make_donationView(request,donationId):
     if request.user.is_authenticated:
         donation_instance = Donation.objects.get(id=donationId)
-        username = request.user.username
-        username_instance = User.objects.get(username=username)
-        membersBalance = Account.objects.filter(member=username_instance).values_list('memberBalance', flat=True).first()
-
+        user = request.user
+        membersBalance = Account.objects.filter(member=user).values_list('memberBalance', flat=True).first()
+        onGoingDonationCheck = DonationTransaction.objects.filter(donation=donation_instance,member=user).count()
         data = {
             "membersBalance":membersBalance,
             "donation_instance":donation_instance,
-            'donationId':donationId
+            'donationId':donationId,
+            'onGoingDonationCheck':onGoingDonationCheck
         }
         return render(request,'members/app_make_donation.html',context=data)
-
     else:
         return render(request,'members/app_make_donation.html',context=data)
     
@@ -913,11 +910,9 @@ def make_donation_View(request,donationId):
             
             recordAsDonation=DonationTransaction(member=member_instance,donation=donationInstance,amount=donationAmount,reference=reference,donationStatus="Successful")
             recordAsDonation.save()
-            
-            return redirect(f'/donation_sucessful/{donationId}')
-        else:
-            messages.info(request,"Donation could not be process")
-            return redirect(f'/make_donation/{donationId}')
+            donationTransaction_id =recordAsDonation.id
+            return redirect(f'/donation_sucessful/{donationTransaction_id}')
+
     else:
         messages.info(request,"Donation could not be process")
         return redirect(f'/make_donation/{donationId}')
@@ -991,21 +986,20 @@ def photo_change_successfulView(request):
     else:
         return redirect('/login')
     
-    
 @login_required(login_url="/login")
 def make_withdrawalView(request):
-    if request.user.is_authenticated:
-        loginUserInstance = request.user
-        memberBalance = Account.objects.get(member=loginUserInstance).memberBalance
+    loginUserInstance = request.user
+    memberBalance = Account.objects.get(member=loginUserInstance).memberBalance
+    try:
         preferenceDate = PreferenceDate.objects.get(member=loginUserInstance)
-        data = {
-            'memberBalance':memberBalance,
-            'preferenceDate':preferenceDate,
-            'currentdate': date.today()
-        }
-        return render(request,'members/app_make_withdrawal.html',context=data)
-    else:
-        return redirect('/login')
+    except PreferenceDate.DoesNotExist:
+        preferenceDate = None  # or set a default value
+    data = {
+        'memberBalance': memberBalance,
+        'preferenceDate': preferenceDate,
+        'currentdate': date.today()
+    }
+    return render(request, 'members/app_make_withdrawal.html', context=data)
     
     
 @login_required(login_url="/login")

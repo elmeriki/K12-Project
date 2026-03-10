@@ -12,7 +12,7 @@ urlpatterns = [
     path('activate_member_account', views.activate_member_accountView, name='activate_member_accountView'),
     path('member_details/<int:select_username>', views.member_detailsView, name='member_detailsView'),
 
-    path('payment_successful/<int:amount>/<str:transactionReference>', views.payment_successfulView, name='payment_successfulView'),
+    path('payment_successful/<int:transactionID>', views.payment_successfulView, name='payment_successfulView'),
 
     path('saving_successful/<int:transactionId>', views.saving_successfulView, name='saving_successfulView'),
     path('saving_unsuccessful/<int:transactionId>', views.saving_unsuccessfulView, name='saving_unsuccessfulView'),
@@ -33,7 +33,6 @@ urlpatterns = [
     path('create_new_donation', views.create_new_donationView, name='create_new_donationView'),
 
     path('donations_log/<int:donationId>', views.donations_logView, name='donations_logView'),
-
 
 
     path('donations', views.donationsView, name='donationsView'),

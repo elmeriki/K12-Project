@@ -45,27 +45,23 @@
             <ul class="listview simple-listview no-space mt-3">
                 <li>
                     <span>Status</span>
-                    <strong>Initiated</strong>
-                </li>
-                <li>
-                    <span>Momo Number</span>
-                    <strong>677398252</strong>
+                    <strong class="text-danger">{{transactions.transactionStatus | upper}}</strong>
                 </li>
                   <li>
-                    <span>Momo Name</span>
-                    <strong>Kontriman</strong>
+                    <span>Transaction Type</span>
+                    <strong>{{transactions.transactionType}}</strong>
                 </li>
                 <li>
                     <span>Date</span>
-                    <strong>{% now "Y-m-d" %}</strong>
+                    <strong>{{transactions.created_at.date}}</strong>
                 </li>
                 <li>
                     <span>Amount</span>
-                    <strong>{{amount}} XAF</strong>
+                    <strong>{{transactions.amount}} XAF</strong>
                 </li>
                 <li>
                     <span>Reference</span>
-                    <strong>{{transactionReference}}</strong>
+                    <strong>{{transactions.transactionReference}}</strong>
                 </li>
             </ul>
             <br><br><br>

@@ -90,7 +90,11 @@
           {% endif %}
             <br>
             <div class="form-group basic">
+              {% if onGoingDonationCheck == 1 %}
+              <button type="button" disabled class="btn btn-lg btn-primary btn-block" data-bs-toggle="modal" data-bs-target="#DialogBasic">Donated Already</button>
+              {% else %}
               <button type="button" class="btn btn-lg btn-primary btn-block" data-bs-toggle="modal" data-bs-target="#DialogBasic">Donate Now</button>
+              {% endif %}
               {% comment %} <button type="submit" class="btn btn-primary btn-block btn-lg" data-bs-dismiss="modal">Pay</button> {% endcomment %}
             </div>
           </form>
