@@ -1,87 +1,119 @@
 {% load static %}
 <!DOCTYPE html>
 <html lang="en">
-  {% include 'ext/header.html' %}
-  <body>
-    <!-- loader -->
-    {% comment %} <div id="loader">
-      <img src="{% static 'assets/img/loading-icon.png' %} " alt="icon" class="loading-icon" />
-    </div> {% endcomment %}
-    <!-- * loader -->
+{% include 'ext/header.html' %}
+<body style="background:#f4f6f9;">
 
-    <!-- App Header -->
-    <div class="appHeader no-border transparent position-absolute">
-      {% comment %} <div class="left">
-        <a href="/" class="headerButton goBack"><ion-icon name="home-outline"></ion-icon></a>
-      </div> {% endcomment %}
-      <div class="pageTitle"></div>
-      <div class="right"></div>
-    </div>
-    <!-- * App Header -->
+<!-- App Header -->
+<div class="appHeader transparent position-absolute">
+  <div class="pageTitle"></div>
+</div>
+<!-- * App Header -->
 
-    <!-- App Capsule -->
-    <div id="appCapsule">
-      <div class="section mt-2 text-center">
-        <h1>Log in</h1>
-        <h4>Access your account.</h4>
+
+<div id="appCapsule">
+
+  <div class="section text-center mt-5 mb-4">
+<div style="width:80px;height:80px;background:#e9f2ff;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:auto;margin-bottom:10px;">
+  <ion-icon name="log-in-outline" style="font-size:40px;color:#0d6efd;"></ion-icon>
+</div>      <h2 style="font-weight:600;">Member Login</h2>
+      <p style="color:#888;">Enter your phone and PIN</p>
+  </div>
+
+
+  <div class="section p-3">
+
+    <form action="/members_login" method="post" onsubmit="handleSubmit(this)" autocomplete="off">
+    {% csrf_token %}
+
+      <div class="card shadow-sm" style="border-radius:18px;">
+        <div class="card-body">
+
+          <!-- Phone -->
+          <div class="form-group basic mb-3">
+            <label class="label">Phone Number</label>
+            <input 
+              type="tel" 
+              class="form-control form-control-lg text-center" 
+              name="username"
+              placeholder="Enter phone number"
+              style="border-radius:12px;"
+            >
+          </div>
+
+
+          <!-- PIN -->
+          <div class="form-group basic text-center">
+
+            <label class="label">Enter PIN</label>
+
+            <input 
+              type="password"
+              name="password"
+              maxlength="5"
+              inputmode="numeric"
+              pattern="[0-9]*"
+              class="form-control text-center"
+              style="
+              font-size:28px;
+              letter-spacing:14px;
+              border-radius:12px;
+              padding:14px;
+              font-weight:600;
+              "
+              placeholder="•••••"
+            >
+
+            <small style="color:#888;">5-digit secure PIN</small>
+
+          </div>
+
+        </div>
       </div>
-      <div class="section mb-5 p-2">
-        <form action="/members_login" method="post" onsubmit="handleSubmit(this)" autocomplete="off">
-          {% csrf_token %}
-          <div class="card">
-            <div class="card-body pb-1">
-              <div class="form-group basic">
-                <div class="input-wrapper">
-                  <label class="label" for="email1">PHONE NUMBER</label>
-                  <input type="number" class="form-control" name="username" id="email1" placeholder="cell phone number" />
-                  <i class="clear-input"><ion-icon name="close-circle"></ion-icon></i>
-                </div>
-              </div>
 
-              <div class="form-group basic">
-                <div class="input-wrapper">
-                  <label class="label" for="password1">PIN</label>
-                  <input type="password" class="form-control" name="password" id="password1" inputmode="numeric" pattern="[0-9]*" min="5" maxlength="5" autocomplete="off" placeholder="Enter PIN" />
-                  <i class="clear-input"><ion-icon name="close-circle"></ion-icon></i>
-                </div>
-              </div>
-            </div>
-          </div>
 
-          <div class="form-links mt-2">
-            <div>
-              <a href="/register">REGISTER</a>
-            </div>
-            <div>
-              <a href="#" class="text-muted">RESET PIN</a>
-            </div>
-          </div>
-          <br />
-          {% if messages %}
-            {% for message in messages %}
-             <div class="alert alert-outline-primary alert-dismissible fade show" role="alert">
-              {{ message }}!
-              <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-              </div>
-            {% endfor %}
-          {% else %}
+      <div class="form-links mt-3 mb-2 text-center">
 
-          {% endif %}
+        <a href="/register" style="font-weight:600;">Register</a>
 
-          <div class="form-button-group transparent">
-            <button type="submit" name="submutbutton" class="btn btn-primary btn-block btn-lg">Log in</button>
-          </div>
-        </form>
+        <span style="margin:0 10px;color:#ccc;">|</span>
+
+        <a href="/reset" class="text-muted">Reset PIN</a>
+
       </div>
-    </div>
-    <!-- * App Capsule -->
-    <script>
-      function handleSubmit(form) {
-        const btn = form.querySelector('button[type="submit"]')
-        btn.disabled = true
-        btn.innerText = 'Please wait...'
-      }
-    </script>
-    {% include 'ext/footer.html' %}
-  </body>
+
+
+      {% if messages %}
+        {% for message in messages %}
+        <div class="alert alert-outline-primary alert-dismissible fade show mt-3" role="alert">
+          {{ message }}
+          <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+        {% endfor %}
+      {% endif %}
+
+
+      <div class="form-button-group mt-4">
+        <button type="submit" class="btn btn-primary btn-lg btn-block" style="border-radius:14px;">
+          Log In
+        </button>
+      </div>
+
+    </form>
+
+  </div>
+
+</div>
+
+
+<script>
+function handleSubmit(form) {
+  const btn = form.querySelector('button[type="submit"]')
+  btn.disabled = true
+  btn.innerText = 'Please wait...'
+}
+</script>
+
+{% include 'ext/footer.html' %}
+</body>
 </html>

@@ -13,7 +13,7 @@
     <div class="appHeader no-border transparent position-absolute">
       <div class="left">
         <a href="/" class="headerButton goBack">
-         <ion-icon name="wallet-outline"></ion-icon>
+        <a href="/"><ion-icon name="refresh-outline"></ion-icon></a>
         </a>
       </div> 
       <div class="pageTitle"></div>
@@ -24,11 +24,17 @@
     <!-- * App Header -->
 
     <!-- App Capsule -->
-    <div id="appCapsule">
-      <div class="section mt-2 text-center">
-        <h1>Join Now</h1>
-        <h4>Create an account.</h4>
-      </div>
+  <!-- Top Icon -->
+  <div class="section text-center mt-5 mb-4">
+
+    <div style="width:80px;height:80px;background:#e9f2ff;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:auto;margin-bottom:10px;">
+      <ion-icon name="person-add-outline" style="font-size:40px;color:#0d6efd;"></ion-icon>
+    </div>
+
+    <h2 style="font-weight:600;">Create Account</h2>
+    <p style="color:#888;">Join GHS Kake 2012 Ex Student Platform</p>
+
+  </div>
 
       <div class="section mb-5 p-2">
         <form action="/register_a_member" id="registerForm" method="post" onsubmit="handleSubmit(this)" autocomplete="off">

@@ -1,0 +1,70 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+  {% include 'ext/header.html' %}
+  <body style="background:#f4f6f9;">
+    <!-- App Header -->
+    <div class="appHeader transparent position-absolute">
+      <div class="pageTitle"></div>
+    </div>
+    <!-- * App Header -->
+
+    <!-- App Capsule -->
+    <div id="appCapsule">
+      <div class="section text-center mt-5 mb-4">
+        <div style="width:80px;height:80px;background:#e9f2ff;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:auto;margin-bottom:10px;">
+          <ion-icon name="mail-open-outline" style="font-size:40px;color:#0d6efd;"></ion-icon>
+        </div>
+
+        <h2 style="font-weight:600;">Reset PIN</h2>
+        <p style="color:#888;">Enter your register email to reset your PIN</p>
+      </div>
+
+      <div class="section p-3">
+        <form method="post" action="/setTemporalPin" onsubmit="handleSubmit(this)" autocomplete="off">
+          {% csrf_token %}
+          <div class="card shadow-sm" style="border-radius:18px;">
+            <div class="card-body">
+              <div class="form-group basic mb-3">
+                <label class="label">Email Address</label>
+
+                <input type="email" class="form-control form-control-lg text-center" name="email" placeholder="Enter your email" required style="border-radius:12px;" />
+              </div>
+            </div>
+          </div>
+
+          <div class="form-button-group mt-4">
+            <button type="submit" class="btn btn-primary btn-lg btn-block" style="border-radius:14px;">Send Reset PIN</button>
+          </div>
+
+          <div class="text-center mt-3">
+            <a href="/login" class="text-muted">Back to Login</a>
+          </div>
+        </form>
+      </div>
+      <div class="container">
+              {% if messages %}
+        {% for message in messages %}
+          <div class="alert alert-outline-primary alert-dismissible fade show" role="alert">
+            {{ message }}!
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+          </div>
+        {% endfor %}
+      {% else %}
+
+      {% endif %}
+      </div>
+    </div>
+    <!-- * App Capsule -->
+
+    <script>
+      function handleSubmit(form) {
+        const btn = form.querySelector('button[type="submit"]')
+        btn.disabled = true
+        btn.innerText = 'Please wait...'
+      }
+    </script>
+
+    {% include 'ext/footer.html' %}
+  </body>
+</html>

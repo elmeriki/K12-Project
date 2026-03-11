@@ -78,4 +78,9 @@ urlpatterns = [
     path('change_profile_picture', views.change_profile_pictureView, name='change_profile_pictureView'),
     path('photo_change_successful', views.photo_change_successfulView, name='photo_change_successfulView'),
 
+
+    # DEMO LINKS
+    # path('error_404_view', views.error_404_view, name='error_404_view'),
+    # path('error_500_view', views.error_500_view, name='error_500_view'),
+
 ]

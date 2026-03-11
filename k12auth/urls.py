@@ -4,6 +4,10 @@ from k12auth import views
 
 urlpatterns = [
     path('', views.welcome, name='welcome'),
+    path('reset', views.resetView, name='resetView'),
+    
+    path('setTemporalPin', views.setTemporalPinView, name='setTemporalPinView'),
+    
     path('login', views.user_login, name='user_login'),
     path('register', views.user_registrattion, name='user_registrattion'),
     path('members_dashboard', views.member_dashboard, name='member_dashboard'),

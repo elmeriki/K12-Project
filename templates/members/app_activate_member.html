@@ -3,10 +3,8 @@
 <html lang="en">
   {% include '../ext/header.html' %}
   <body>
-    <!-- loader -->
-    {% comment %} <div id="loader">
-      <img src="assets/img/loading-icon.png" alt="icon" class="loading-icon" />
-    </div> {% endcomment %}
+   <!-- loader -->
+    {% include "members/app_loader.html" %}
     <!-- * loader -->
 
     <!-- * App Header -->
@@ -51,16 +49,17 @@
               {% else %}
               <div class="form-group basic">
                 <div class="input-wrapper">
-                    <label class="label" for="account2d">DESIGNATION</label>
+                    <label class="label" for="account2d">EXCO or MEMBER</label>
                     <select class="form-control custom-select" name="designation" id="account2d" required>
                         <option value="" disabled selected>Select designation</option>
                         <option value="Member">Member</option>
+                         <option value="Member">EXCO</option>
                     </select>
                 </div>
               </div>
               <div class="form-group basic">
                 <div class="input-wrapper">
-                    <label class="label" for="account2d">POSITION</label>
+                    <label class="label" for="account2d">EXCO OR NON EXCO POSITION</label>
                     <select class="form-control custom-select" name="position" id="account2d" required>
                         <option value="" disabled selected>Select designation</option>
                         <option value="Member">Member</option>

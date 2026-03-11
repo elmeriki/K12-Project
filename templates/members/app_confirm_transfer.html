@@ -6,14 +6,14 @@
   <!-- * App Header -->
 
   <body class="bg-white">
-    <!-- loader -->
-    {% comment %} {% include 'members/app_loader.html' %} {% endcomment %}
+   <!-- loader -->
+    {% include "members/app_loader.html" %}
     <!-- * loader -->
 
     <!-- App Header -->
     <div class="appHeader no-border">
       <div class="left">
-        <a href="#" class="headerButton goBack"><ion-icon name="chevron-back-outline"></ion-icon></a>
+        {% comment %} <a href="#" class="headerButton goBack"><ion-icon name="chevron-back-outline"></ion-icon></a> {% endcomment %}
       </div>
       <div class="pageTitle">VERIFY PAYMENT</div>
       <div class="right"></div>
@@ -78,12 +78,12 @@
               <a href="/members_dashboard" class="btn btn-lg btn-outline-secondary btn-block">Cancel</a>
             </div>
             <div class="col-6">
-              <form id="transferForm" action="/finalise_transfer" method="post">
+              <form id="transferForm" action="/finalise_transfer" onsubmit="handleSubmit(this)" method="post">
                 {% csrf_token %}
                 <input type="number" name="amount" value="{{ amount }}" hidden />
                 <input type="text" name="username" value="{{ RecieveInstance.username }}" hidden />
 
-                <button type="submit" class="btn btn-lg btn-primary btn-block" data-bs-toggle="modal" data-bs-target="#DialogBasic">Confirm</button>
+                <button type="submit" class="btn btn-lg btn-primary btn-block" >Confirm</button>
               </form>
             </div>
           </div>

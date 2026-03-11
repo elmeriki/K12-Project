@@ -8,8 +8,6 @@ from django.contrib.auth.decorators import login_required
 from django.core.mail import EmailMultiAlternatives
 from django.db.models import Count,Sum
 from django.db.models import Q
-from twilio.rest import Client
-from decouple import config
 import datetime
 from datetime import date
 from django.db import transaction
@@ -24,6 +22,18 @@ from members.models import *
 from django.conf import settings
 from django.db.models import F
 from decimal import Decimal
+from mailjet_rest import Client as MailjetClient  # Alias for the Client class
+from datetime import datetime
+
+
+@login_required(login_url="/login")
+def error_404_view(request, exception):
+    return render(request, 'members/404.html', status=404)
+
+
+@login_required(login_url="/login")
+def error_500_view(request):
+    return render(request, 'members/500.html', status=500)
 
 
 @login_required(login_url="/login")
@@ -283,6 +293,47 @@ def activate_member_accountView(request):
         account.registrationAmount = registrationAmount
         account.save()
         
+        mailjet = MailjetClient(auth=(settings.MAILJET_API_KEY, settings.MAILJET_API_SECRET), version='v3.1')
+        data = {
+            'Messages': [{
+                "From": {"Email": settings.DEFAULT_FROM_EMAIL, "Name": settings.DEFAULT_FROM_NAME},
+                "To": [{"Email": username_instance.email, "Name": fname}],
+                "Subject": f"{settings.DEFAULT_FROM_NAME} Account Activation Confirmation",
+                "HTMLPart": f'''
+                <p>Dear <strong>{fname}</strong>,</p>
+
+                <p>
+                    We are pleased to inform you that your account with 
+                    <strong>{settings.DEFAULT_FROM_NAME}</strong> has been successfully activated.
+                </p>
+                <p>
+                    Your position within the group has been recorded as 
+                    <strong>{position}</strong>.
+                </p>
+                <p>
+                    You can now log in to your account and begin using the platform to manage 
+                    your savings, transactions, and other member activities.
+                </p>
+                <p>
+                    If you have any questions or require assistance, please feel free to contact the administrator.
+                </p>
+
+                <br>
+                <p>Kind regards,<br>
+                <strong>{settings.DEFAULT_FROM_NAME} Administration</strong></p>
+                <br>
+                <hr>
+                <p><strong>CONFIDENTIALITY NOTICE:</strong></p>
+                <p>
+                    This email and any attachments are confidential and intended solely for the named recipient. 
+                    If you have received this email in error, please notify the sender immediately and delete it 
+                    from your system. Unauthorized use, disclosure, or distribution of this message is prohibited.
+                </p>
+                '''
+            }]
+        }
+
+        mailjet.send.create(data=data)
         messages.info(request,"Member's account has been activated successfuly")
         return redirect(f'/activate_account/{username}')
     else:
@@ -426,7 +477,52 @@ def finalise_transferView(request):
     
     recordTransactionForReciever=Transaction(member=receiver,amount=amount,transactionType="Recieving",transactionReference="Incoming",transactionStatus="Successful")
     recordTransactionForReciever.save()
-    
+    transaction_date = datetime.now().strftime("%d %B %Y, %H:%M")
+    mailjet = MailjetClient(auth=(settings.MAILJET_API_KEY, settings.MAILJET_API_SECRET), version='v3.1')
+    data = {
+        'Messages': [{
+            "From": {"Email": settings.DEFAULT_FROM_EMAIL, "Name": settings.DEFAULT_FROM_NAME},
+            "To": [{"Email": sender.email, "Name": sender.first_name}],
+            "Subject": f"Member Transfer Confirmation {transaction_date}",
+            "HTMLPart": f'''
+            <p>Dear <strong>{sender.first_name}</strong>,</p>
+
+            <p>
+                This email confirms that your transfer within 
+                <strong>{settings.DEFAULT_FROM_NAME}</strong> has been successfully completed.
+            </p>
+
+            <p>
+                The transfer was processed on <strong>{transaction_date}</strong> and the amount has been 
+                successfully allocated to the recipient's account.
+            </p>
+
+            <p>
+                You may log in to your account at any time to review your updated balance or 
+                view the transaction details in your transaction log.
+            </p>
+
+            <p>
+                If you did not authorize this transaction or require further assistance, 
+                please contact the administration immediately.
+            </p>
+
+            <p>
+            Kind regards,<br>
+            <strong>{settings.DEFAULT_FROM_NAME} Administration</strong>
+            </p>
+            <hr>
+
+            <p><strong>CONFIDENTIALITY NOTICE:</strong></p>
+            <p>
+                This email and any attachments are confidential and intended solely for the named recipient. 
+                If you received this message in error, please notify the sender and delete it from your system.
+            </p>
+            '''
+        }]
+    }
+
+    mailjet.send.create(data=data)
     return redirect(f'/transfer_successful/{recordTransactionForSender.id}/{recordTransactionForReciever.id}')
 
 @login_required(login_url="/login")
@@ -576,6 +672,53 @@ def submit_transactionView(request):
         transactionStatus="Initiated"
     )
     transaction_id = transaction.id
+    user=request.user
+    transaction_date = datetime.now().strftime("%d %B %Y, %H:%M")
+    mailjet = MailjetClient(auth=(settings.MAILJET_API_KEY, settings.MAILJET_API_SECRET), version='v3.1')
+    data = {
+        'Messages': [{
+            "From": {"Email": settings.DEFAULT_FROM_EMAIL, "Name": settings.DEFAULT_FROM_NAME},
+            "To": [{"Email":user.email, "Name": user.first_name}],
+            "Subject": f"{settings.DEFAULT_FROM_NAME} Savings Transaction Received",
+            "HTMLPart": f'''
+            <p>Dear <strong>{user.first_name}</strong>,</p>
+
+            <p>
+            This email confirms that your savings transaction request was successfully received on 
+            <strong>{transaction_date}</strong>.
+            </p>
+
+            <p>
+                The transaction is currently <strong>under review</strong>. Once the verification process 
+                has been completed, the amount ({amount}XAF) will be credited to your savings account.
+            </p>
+
+            <p>
+                You will receive another email notification confirming that the funds have been successfully 
+                credited to your account.
+            </p>
+
+            <p>
+                If you have any questions regarding this transaction, please feel free to contact the administrator.
+            </p>
+
+            <br>
+
+            <p>
+            Kind regards,<br>
+            <strong>{settings.DEFAULT_FROM_NAME} Administration</strong>
+            </p>
+            <hr>
+            <p><strong>CONFIDENTIALITY NOTICE:</strong></p>
+            <p>
+                This email and any attachments are confidential and intended solely for the named recipient. 
+                If you have received this email in error, please notify the sender immediately and delete it 
+                from your system. Unauthorized use, disclosure, or distribution of this message is prohibited.
+            </p>
+            '''
+        }]
+    }
+    mailjet.send.create(data=data)
     return redirect(f'/payment_successful/{transaction_id}')
     
 @login_required(login_url="/login")
@@ -911,6 +1054,50 @@ def make_donation_View(request,donationId):
             recordAsDonation=DonationTransaction(member=member_instance,donation=donationInstance,amount=donationAmount,reference=reference,donationStatus="Successful")
             recordAsDonation.save()
             donationTransaction_id =recordAsDonation.id
+            transaction_date = datetime.now().strftime("%d %B %Y, %H:%M")
+            mailjet = MailjetClient(auth=(settings.MAILJET_API_KEY, settings.MAILJET_API_SECRET), version='v3.1')
+            data = {
+                'Messages': [{
+                    "From": {"Email": settings.DEFAULT_FROM_EMAIL, "Name": settings.DEFAULT_FROM_NAME},
+                    "To": [{"Email": member_instance.email, "Name":member_instance.first_name}],
+                    "Subject": f"Donation Payment Confirmation {transaction_date}",
+                    "HTMLPart": f'''
+                    <p>Dear <strong>{member_instance.first_name}</strong>,</p>
+
+                    <p>
+                        Thank you for your generous contribution. This email confirms that your 
+                        donation has been successfully received on <strong>{transaction_date}</strong>.
+                    </p>
+
+                    <p>
+                        Your support is greatly appreciated and helps strengthen the activities 
+                        and initiatives of <strong>{settings.DEFAULT_FROM_NAME}</strong>.
+                    </p>
+
+                    <p>
+                        You may log in to your account at any time to review your donation record 
+                        and transaction history.
+                    </p>
+
+                    <p>
+                        If you have any questions regarding this payment, please feel free to contact the administration.
+                    </p>
+
+                    <p>
+                    Kind regards,<br>
+                    <strong>{settings.DEFAULT_FROM_NAME} Administration</strong>
+                    </p>
+                    <hr>
+
+                    <p><strong>CONFIDENTIALITY NOTICE:</strong></p>
+                    <p>
+                        This email and any attachments are confidential and intended solely for the named recipient. 
+                        If you have received this email in error, please notify the sender and delete it from your system.
+                    </p>
+                    '''
+                }]
+            }
+            mailjet.send.create(data=data)
             return redirect(f'/donation_sucessful/{donationTransaction_id}')
 
     else:
@@ -1044,12 +1231,95 @@ def reconcile_transaction_View(request,transactionId):
             membersTransactionUpdate = Transaction.objects.get(id=transactionId)
             membersTransactionUpdate.transactionStatus=decision
             membersTransactionUpdate.save()
+            
+            mailjet = MailjetClient(auth=(settings.MAILJET_API_KEY, settings.MAILJET_API_SECRET), version='v3.1')
+            transaction_date = datetime.now().strftime("%d %B %Y, %H:%M")
+            data = {
+                'Messages': [{
+                    "From": {"Email": settings.DEFAULT_FROM_EMAIL, "Name": settings.DEFAULT_FROM_NAME},
+                    "To": [{"Email": member_instance.email, "Name": member_instance.first_name}],
+                    "Subject": f"Savings Transaction Completed {transaction_date}",
+                    "HTMLPart": f'''
+                    <p>Dear <strong>{member_instance.first_name}</strong>,</p>
+
+                    <p>
+                        We are pleased to inform you that your savings transaction has been successfully 
+                        received and credited to your account on <strong>{transaction_date}</strong>.
+                    </p>
+
+                    <p>
+                        You can log in to your account to confirm that the amount has been allocated to your savings balance 
+                        or check the transaction log for details.
+                    </p>
+
+                    <p>
+                        Thank you for using <strong>{settings.DEFAULT_FROM_NAME}</strong> to manage your savings. 
+                        Your continued commitment helps strengthen our community of members.
+                    </p>
+
+                    <p>
+                    Kind regards,<br>
+                    <strong>{settings.DEFAULT_FROM_NAME} Administration</strong>
+                    </p>
+                    <hr>
+                    <p><strong>CONFIDENTIALITY NOTICE:</strong></p>
+                    <p>
+                        This email and any attachments are confidential and intended solely for the named recipient. 
+                        If you have received this email in error, please notify the sender immediately and delete it from your system. 
+                        Unauthorized use, disclosure, or distribution of this message is prohibited.
+                    </p>
+                    '''
+                }]
+            }
+            mailjet.send.create(data=data)
             return redirect(f'/saving_successful/{transactionId}')
         
         if decision == "Rejected" or decision == "Fraud":
             membersTransactionUpdate = Transaction.objects.get(id=transactionId)
             membersTransactionUpdate.transactionStatus=decision
             membersTransactionUpdate.save()
+            
+            transaction_date = datetime.now().strftime("%d %B %Y, %H:%M")
+            
+            data = {
+                'Messages': [{
+                    "From": {"Email": settings.DEFAULT_FROM_EMAIL, "Name": settings.DEFAULT_FROM_NAME},
+                    "To": [{"Email": member_instance.email, "Name": member_instance.first_name}],
+                    "Subject": f"{transaction_date} Transaction {decision} Notification",
+                    "HTMLPart": f'''
+                    <p>Dear <strong>{member_instance.first_name}</strong>,</p>
+
+                    <p>
+                        We wish to inform you that your savings transaction initiated on 
+                        <strong>{transaction_date}</strong> has been marked as <strong>{decision}</strong>.
+                    </p>
+                    <p>
+                        This means that the transaction will not be credited to your account at this time. 
+                        Please review your transaction details and contact the administration if you believe this decision is in error.
+                    </p>
+
+                    <p>
+                        You can log in to your account to view the transaction log for more details.
+                    </p>
+                    <p>
+                        Thank you for your attention to this matter.
+                    </p>
+
+                    <p>
+                    Kind regards,<br>
+                    <strong>{settings.DEFAULT_FROM_NAME} Administration</strong>
+                    </p>
+                    <hr>
+                    <p><strong>CONFIDENTIALITY NOTICE:</strong></p>
+                    <p>
+                        This email and any attachments are confidential and intended solely for the named recipient. 
+                        If you have received this email in error, please notify the sender immediately and delete it from your system. 
+                        Unauthorized use, disclosure, or distribution of this message is prohibited.
+                    </p>
+                    '''
+                }]
+            }
+            mailjet.send.create(data=data)
             return redirect(f'/saving_unsuccessful/{transactionId}')
     else:
         messages.info(request,"Payment could not be reconcile")

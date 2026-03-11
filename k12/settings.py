@@ -15,7 +15,7 @@ DEBUG = True
 
 ALLOWED_HOSTS = ["*"]
 
-MAIN_GROUP_NUMBER = "650065760"
+MAIN_GROUP_NUMBER = "650065000"
 KONTRIMAN_MTN_NUMBER = "677398252"
 KONTRIMAN_ORANGE_CODE = "815752"
 
@@ -103,13 +103,12 @@ AUTH_PASSWORD_VALIDATORS = [
 # https://docs.djangoproject.com/en/5.2/topics/i18n/
 
 LANGUAGE_CODE = 'en-us'
-
-TIME_ZONE = 'UTC'
-
+USE_TZ = True
+TIME_ZONE = 'Africa/Douala'
 USE_I18N = True
 
-USE_TZ = True
-
+# TIME_ZONE = 'UTC'
+# USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.2/howto/static-files/
@@ -148,7 +147,7 @@ DEFAULT_AUTO_FIELD='django.db.models.AutoField'
 # STATIC_ROOT = '/home/username/k12.com/static'
 
 
-SESSION_EXPIRE_AT_BROWSER_CLOSE=True 
-SESSION_COOKIE_AGE = 10000                  
-SESSION_SAVE_EVERY_REQUEST =True     
+SESSION_EXPIRE_AT_BROWSER_CLOSE = True
+SESSION_COOKIE_AGE = 100000   # 5 minutes of inactivity
+SESSION_SAVE_EVERY_REQUEST = False 
 

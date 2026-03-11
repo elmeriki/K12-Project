@@ -1,6 +1,8 @@
     {% load static %}
     <!-- loader -->
     <div id="loader">
-        <img src="{% static 'assets/img/loading-icon.png'  %} " alt="icon" class="loading-icon">
+        {% comment %} <img src="{% static 'assets/img/loading-icon.png'  %} " alt="icon" class="loading-icon"> {% endcomment %}
+        <div class="spinner-border text-primary" role="status">
+        </div>
     </div>
     <!-- * loader -->
