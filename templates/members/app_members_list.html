@@ -21,6 +21,9 @@
                 {% if members_instance %}
                 {% for eachMember in members_instance %}
                 <!-- item -->
+                {% if eachMember.is_admin %}
+
+                {% else %}
                 {% if request.user.is_admin %}
                 <a href="/activate_account/{{eachMember.username}}" class="item">
                 {% else %}
@@ -48,8 +51,9 @@
                     </div>
                 </a>
                 <!-- * item -->
+                {% endif %}
                 {% endfor %}
-
+                
                 {% else %}
                     <p>There are no pending member accounts to be activated.</p>
                 {% endif %}

@@ -1,0 +1,21 @@
+{
+  "name": "K12 Portal",
+  "short_name": "K12",
+  "start_url": "https://k12portal.online/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#6236ff",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "play_store_512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    },
+    {
+      "src": "play_store_512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

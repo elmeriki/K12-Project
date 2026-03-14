@@ -52,7 +52,7 @@ def app_settingView(request):
 @login_required(login_url="/login")
 def member_listView(request):
     if request.user.is_authenticated and request.user.is_member or request.user.is_admin:
-        members_instance=User.objects.filter( Q(is_member=True,is_staff=False) | Q(is_member=False,is_staff=False) )
+        members_instance=User.objects.filter(is_member=True)
         data = {
             'members_instance':members_instance
         }
@@ -64,7 +64,7 @@ def member_listView(request):
 @login_required(login_url="/login")
 def unactivated_membersView(request):
     if request.user.is_authenticated and request.user.is_admin:
-        members_instance=User.objects.filter(is_member=False,is_staff=False)
+        members_instance=User.objects.filter(is_member=False)
         data = {
             'members_instance':members_instance
         }

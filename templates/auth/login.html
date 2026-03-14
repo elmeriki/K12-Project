@@ -1,4 +1,4 @@
-{% load static %}
+{% comment %} {% load static %}
 <!DOCTYPE html>
 <html lang="en">
 {% include 'ext/header.html' %}
@@ -112,6 +112,138 @@ function handleSubmit(form) {
   btn.disabled = true
   btn.innerText = 'Please wait...'
 }
+</script>
+
+{% include 'ext/footer.html' %}
+</body>
+</html> {% endcomment %}
+
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+{% include 'ext/header.html' %}
+<body style="background:#f4f6f9;">
+
+    <!-- loader -->
+      {% include 'members/app_loader.html' %} 
+    <!-- * loader -->
+
+    
+<!-- App Header -->
+<div class="appHeader transparent position-absolute">
+  <div class="pageTitle"></div>
+</div>
+<!-- * App Header -->
+
+<div id="appCapsule">
+
+  <div class="section text-center mt-5 mb-4">
+    <div style="width:80px;height:80px;background:#e9f2ff;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:auto;margin-bottom:10px;">
+      <ion-icon name="log-in-outline" style="font-size:40px;color:#0d6efd;"></ion-icon>
+    </div>
+    <h2 style="font-weight:600;">Member Login</h2>
+    <p style="color:#888;">Enter your phone and PIN</p>
+  </div>
+
+  <div class="section p-3">
+
+    <form action="/members_login" method="post" onsubmit="handleSubmit(this)" autocomplete="off">
+    {% csrf_token %}
+
+      <div class="card shadow-sm" style="border-radius:18px;">
+        <div class="card-body">
+
+          <!-- Phone -->
+          <div class="form-group basic mb-3">
+            <label class="label">Phone Number</label>
+            <input 
+              type="tel"
+              maxlength="9"
+              min="9"
+              id="phone"
+              class="form-control form-control-lg text-center" 
+              name="username"
+              placeholder="Enter phone number"
+              style="border-radius:12px;"
+            >
+          </div>
+
+          <!-- PIN -->
+          <div class="form-group basic text-center">
+            <label class="label">Enter PIN</label>
+
+            <input 
+              type="password"
+              id="pin"
+              name="password"
+              maxlength="5"
+              min="5"
+              inputmode="numeric"
+              pattern="[0-9]*"
+              class="form-control text-center"
+              style="
+              font-size:28px;
+              letter-spacing:14px;
+              border-radius:12px;
+              padding:14px;
+              font-weight:600;
+              "
+              placeholder="•••••"
+            >
+
+            <small style="color:#888;">5-digit secure PIN</small>
+          </div>
+
+        </div>
+      </div>
+
+      <div class="form-links mt-3 mb-2 text-center">
+
+        <a href="/register" style="font-weight:600;">Register</a>
+
+        <span style="margin:0 10px;color:#ccc;">|</span>
+
+        <a href="/reset" class="text-muted">Reset PIN</a>
+
+      </div>
+
+      {% if messages %}
+        {% for message in messages %}
+        <div class="alert alert-outline-primary alert-dismissible fade show mt-3" role="alert">
+          {{ message }}
+          <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+        {% endfor %}
+      {% endif %}
+
+      <div class="form-button-group mt-4">
+        <button type="submit" class="btn btn-primary btn-lg btn-block" style="border-radius:14px;">
+          Log In
+        </button>
+      </div>
+
+    </form>
+
+  </div>
+
+</div>
+
+<script>
+function handleSubmit(form) {
+  const btn = form.querySelector('button[type="submit"]')
+  btn.disabled = true
+  btn.innerText = 'Please wait...'
+}
+
+const phone = document.getElementById("phone");
+const pin = document.getElementById("pin");
+
+phone.addEventListener("keypress", function(e){
+  if(e.key === "Enter"){
+    e.preventDefault();
+    pin.focus();
+  }
+});
 </script>
 
 {% include 'ext/footer.html' %}

@@ -55,5 +55,13 @@
     </div>
 
     {% include 'ext/footer.html' %}
+
+  <script>
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('/static/assets/sw.js')
+}
+</script>
   </body>
 </html>
+
+

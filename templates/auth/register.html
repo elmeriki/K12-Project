@@ -3,18 +3,14 @@
 <html lang="en">
   {% include 'ext/header.html' %}
   <body>
-    <!-- loader -->
-    {% comment %} <div id="loader">
-      <img src="{% static 'assets/img/loading-icon.png' %} " alt="icon" class="loading-icon" />
-    </div> {% endcomment %}
+  <!-- loader -->
+      {% include 'members/app_loader.html' %} 
     <!-- * loader -->
+
 
     <!-- App Header -->
     <div class="appHeader no-border transparent position-absolute">
       <div class="left">
-        <a href="/" class="headerButton goBack">
-        <a href="/"><ion-icon name="refresh-outline"></ion-icon></a>
-        </a>
       </div> 
       <div class="pageTitle"></div>
       <div class="right">
