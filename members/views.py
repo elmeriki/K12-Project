@@ -38,28 +38,47 @@ def error_500_view(request):
 
 @login_required(login_url="/login")
 def app_settingView(request):
-    if request.user.is_authenticated:
-        username = request.user.username
-        members_instance=User.objects.get(username=username)
-        data = {
-            'members_instance':members_instance
-        }
-        return render(request,'members/app_my_profile.html',context=data)
-    else:
-        return redirect('/login')
+    context = {
+        'members_instance': request.user
+    }
+    return render(request, 'members/app_my_profile.html', context)
+
+
+# @login_required(login_url="/login")
+# def app_settingView(request):
+#     if request.user.is_authenticated:
+#         username = request.user.username
+#         members_instance=User.objects.get(username=username)
+#         data = {
+#             'members_instance':members_instance
+#         }
+#         return render(request,'members/app_my_profile.html',context=data)
+#     else:
+#         return redirect('/login')
 
  
+# @login_required(login_url="/login")
+# def member_listView(request):
+#     if request.user.is_authenticated and request.user.is_member or request.user.is_admin:
+#         members_instance=User.objects.filter(is_member=True)
+#         data = {
+#             'members_instance':members_instance
+#         }
+#         return render(request,'members/app_members_list.html',context=data)
+#     else:
+#         return redirect('/login')
+
 @login_required(login_url="/login")
 def member_listView(request):
-    if request.user.is_authenticated and request.user.is_member or request.user.is_admin:
-        members_instance=User.objects.filter(is_member=True)
-        data = {
-            'members_instance':members_instance
-        }
-        return render(request,'members/app_members_list.html',context=data)
-
-    else:
-        return redirect('/login')
+    if not (request.user.is_member or request.user.is_admin):
+        return redirect("/login")
+    members_instance = User.objects.filter(is_member=True).only(
+        "id", "username", "first_name", "last_name"
+    )
+    context = {
+        "members_instance": members_instance
+    }
+    return render(request, "members/app_members_list.html", context)
 
 @login_required(login_url="/login")
 def unactivated_membersView(request):
@@ -388,7 +407,8 @@ def verify_payment_amountView(request):
             "amount":amount,
             "reference":reference,
             "username_instance":username_instance,
-            "depositCountLog":depositCountLog
+            "depositCountLog":depositCountLog,
+            "kontrimanFloat":settings.KONTRIMAN_MTN_NUMBER
         }
         return render(request,'members/app_process_payment.html',context=data)
 
@@ -679,7 +699,7 @@ def submit_transactionView(request):
         'Messages': [{
             "From": {"Email": settings.DEFAULT_FROM_EMAIL, "Name": settings.DEFAULT_FROM_NAME},
             "To": [{"Email":user.email, "Name": user.first_name}],
-            "Subject": f"{settings.DEFAULT_FROM_NAME} Savings Transaction Received",
+            "Subject": f"Savings Transaction Received {transaction_date}",
             "HTMLPart": f'''
             <p>Dear <strong>{user.first_name}</strong>,</p>
 

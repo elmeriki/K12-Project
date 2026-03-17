@@ -46,31 +46,78 @@ def user_registrattion(request):
     else:
         return render(request,'auth/register.html',{})
 
+# @login_required(login_url="/login")
+# def member_dashboard(request):
+#     members_instance=User.objects.filter( Q(is_member=True,is_staff=False) | Q(is_member=False,is_staff=False) )
+#     username = request.user.username
+#     mainUserInstance = User.objects.get(username=settings.MAIN_GROUP_NUMBER)
+#     select_members_instance=User.objects.get(username=username)        
+#     mainAccountBalance = Account.objects.filter(member=mainUserInstance).values_list('mainAccountBalance', flat=True).first() 
+#     membersBalance = Account.objects.filter(member=select_members_instance).values_list('memberBalance',flat=True).first()
+#     troubleFundsBalance = Account.objects.filter(member=mainUserInstance).values_list('troubleFundsBalance',flat=True).first()
+#     groupRegistrationAmount = Account.objects.filter(member=select_members_instance).values_list('registrationAmount',flat=True).first()
+#     transaction_log = Transaction.objects.filter(member=select_members_instance).order_by('-created_at')[:5]
+#     toBeReconcileTransaction = Transaction.objects.filter(transactionStatus="Initiated",transactionType="Deposit").order_by('-created_at')[:10]
+#     toBeWithdrawalTransaction = Withdrawal.objects.filter(withdrawalStatus="Initiated").order_by('-created_at')[:10]
+
+#     data = {
+#         'members_instance':members_instance,
+#         'mainAccountBalance':mainAccountBalance,
+#         'membersBalance':membersBalance,
+#         'troubleFundsBalance':troubleFundsBalance,
+#         'groupRegistrationAmount':groupRegistrationAmount,
+#         'transaction_log':transaction_log,
+#         'toBeReconcileTransaction':toBeReconcileTransaction,
+#         'toBeWithdrawalTransaction':toBeWithdrawalTransaction
+#     }    
+#     return render(request,'members/dashboard.html',context=data)
+
+
+
 @login_required(login_url="/login")
 def member_dashboard(request):
-    members_instance=User.objects.filter( Q(is_member=True,is_staff=False) | Q(is_member=False,is_staff=False) )
     username = request.user.username
-    mainUserInstance = User.objects.get(username=settings.MAIN_GROUP_NUMBER)
-    select_members_instance=User.objects.get(username=username)        
-    mainAccountBalance = Account.objects.filter(member=mainUserInstance).values_list('mainAccountBalance', flat=True).first() 
-    membersBalance = Account.objects.filter(member=select_members_instance).values_list('memberBalance',flat=True).first()
-    troubleFundsBalance = Account.objects.filter(member=mainUserInstance).values_list('troubleFundsBalance',flat=True).first()
-    groupRegistrationAmount = Account.objects.filter(member=select_members_instance).values_list('registrationAmount',flat=True).first()
-    transaction_log = Transaction.objects.filter(member=select_members_instance).order_by('-created_at')[:5]
-    toBeReconcileTransaction = Transaction.objects.filter(transactionStatus="Initiated",transactionType="Deposit").order_by('-created_at')[:10]
-    toBeWithdrawalTransaction = Withdrawal.objects.filter(withdrawalStatus="Initiated").order_by('-created_at')[:10]
+    members_instance = User.objects.filter(
+        Q(is_member=True, is_staff=False) | Q(is_member=False, is_staff=False))
+    
+    main_user = User.objects.only("id").get(username=settings.MAIN_GROUP_NUMBER)
+    current_user = request.user
 
-    data = {
-        'members_instance':members_instance,
-        'mainAccountBalance':mainAccountBalance,
-        'membersBalance':membersBalance,
-        'troubleFundsBalance':troubleFundsBalance,
-        'groupRegistrationAmount':groupRegistrationAmount,
-        'transaction_log':transaction_log,
-        'toBeReconcileTransaction':toBeReconcileTransaction,
-        'toBeWithdrawalTransaction':toBeWithdrawalTransaction
-    }    
-    return render(request,'members/dashboard.html',context=data)
+    main_account = Account.objects.filter(member=main_user).first()
+    member_account = Account.objects.filter(member=current_user).first()
+
+    mainAccountBalance = main_account.mainAccountBalance if main_account else 0
+    troubleFundsBalance = main_account.troubleFundsBalance if main_account else 0
+
+    membersBalance = member_account.memberBalance if member_account else 0
+    groupRegistrationAmount = member_account.registrationAmount if member_account else 0
+
+    transaction_log = Transaction.objects.filter(
+        member=current_user
+    ).order_by('-created_at')[:5]
+
+    toBeReconcileTransaction = Transaction.objects.filter(
+        transactionStatus="Initiated",
+        transactionType="Deposit"
+    ).order_by('-created_at')[:10]
+
+    toBeWithdrawalTransaction = Withdrawal.objects.filter(
+        withdrawalStatus="Initiated"
+    ).order_by('-created_at')[:10]
+
+    context = {
+        'members_instance': members_instance,
+        'mainAccountBalance': mainAccountBalance,
+        'membersBalance': membersBalance,
+        'troubleFundsBalance': troubleFundsBalance,
+        'groupRegistrationAmount': groupRegistrationAmount,
+        'transaction_log': transaction_log,
+        'toBeReconcileTransaction': toBeReconcileTransaction,
+        'toBeWithdrawalTransaction': toBeWithdrawalTransaction,
+    }
+
+    return render(request, 'members/dashboard.html', context)
+
 
 @login_required(login_url="/login")
 def reset_pinView(request):
@@ -323,36 +370,57 @@ def change_pinView(request):
         messages.info(request,"Invalid input. Please check and try again.")
         return redirect('/reset_pin')
     
-
-
-@transaction.atomic
+    
 def members_loginView(request):
     if request.method == "POST":
-        username = request.POST.get('username')
-        password = request.POST.get('password')
+        username = request.POST.get("username")
+        password = request.POST.get("password")
 
-        if not User.objects.filter(username=username).exists():
+        user = auth.authenticate(request, username=username, password=password)
+
+        if user is None:
             messages.info(request, "Incorrect login credentials.")
-            return redirect('/login')
+            return redirect("/login")
 
-        userlog = auth.authenticate(username=username, password=password)
-
-        if userlog is None:
-            messages.info(request, "Incorrect login credentials.")
-            return redirect('/login')
-
-        # check activation BEFORE login
-        if not userlog.is_member and not userlog.is_admin:
+        # check activation
+        if not user.is_member and not user.is_admin:
             messages.info(request, "Your account is not activated.")
-            return redirect('/login')
+            return redirect("/login")
 
-        # login user
-        auth.login(request, userlog)
-        return redirect('/members_dashboard')
+        auth.login(request, user)
+        return redirect("/members_dashboard")
 
-    else:
-        messages.info(request, "Enter a valid username and PIN")
-        return redirect('/login')
+    messages.info(request, "Enter a valid username and PIN")
+    return redirect("/login")
+
+
+# def members_loginView(request):
+#     if request.method == "POST":
+#         username = request.POST.get('username')
+#         password = request.POST.get('password')
+
+#         if not User.objects.filter(username=username).exists():
+#             messages.info(request, "Incorrect login credentials.")
+#             return redirect('/login')
+
+#         userlog = auth.authenticate(username=username, password=password)
+
+#         if userlog is None:
+#             messages.info(request, "Incorrect login credentials.")
+#             return redirect('/login')
+
+#         # check activation BEFORE login
+#         if not userlog.is_member and not userlog.is_admin:
+#             messages.info(request, "Your account is not activated.")
+#             return redirect('/login')
+
+#         # login user
+#         auth.login(request, userlog)
+#         return redirect('/members_dashboard')
+
+#     else:
+#         messages.info(request, "Enter a valid username and PIN")
+#         return redirect('/login')
     
 def member_logoutView(request):
     auth.logout(request)
