@@ -54,16 +54,18 @@
             <strong>{{ select_transaction.amount }} XAF</strong>
           </li>
           {% if select_transaction.transactionStatus == "Verified" %}
-          <span>PROOF OF PAYMENT</span>
+          
+          <a href="/pod_preview/{{select_transaction.id}}">
             <div class="custom-file-upload" id="fileUpload1">
                   <img src="{{ select_transaction.PODs.url }}" alt="Proof of Payment" />
                 <label for="fileuploadInput"></label>
           </div>
+          </a>
           {% elif select_transaction.transactionStatus == "Initiated" %}
           {% endif %}
         </ul>
-        <br><br><br>
-        <a href="/members_dashboard" class="btn btn-primary btn-block btn-lg">Close</a>
+        <br>
+        <a href="/pod_preview/{{select_transaction.id}}" class="btn btn-secondary btn-block btn-lg">PREVIEW</a>
       </div>
     </div>
     <!-- * App Capsule -->

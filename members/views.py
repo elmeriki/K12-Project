@@ -145,7 +145,7 @@ def donations_logView(request,donationId):
 @login_required(login_url="/login")
 def incoming_paymentView(request):
     if request.user.is_authenticated and request.user.is_admin:
-        transaction = Transaction.objects.filter(transactionStatus="Verified")[:10]
+        transaction = Transaction.objects.filter(transactionStatus="Verified" ).order_by('-created_at')[:20]
         data = {
             'transaction':transaction
         }
@@ -699,18 +699,18 @@ def submit_transactionView(request):
         'Messages': [{
             "From": {"Email": settings.DEFAULT_FROM_EMAIL, "Name": settings.DEFAULT_FROM_NAME},
             "To": [{"Email":user.email, "Name": user.first_name}],
-            "Subject": f"Savings Transaction Received {transaction_date}",
+            "Subject": f"Savings Initiated {transaction_date}",
             "HTMLPart": f'''
             <p>Dear <strong>{user.first_name}</strong>,</p>
 
             <p>
-            This email confirms that your savings transaction request was successfully received on 
+            This email confirms that your savings request was successfully <strong>INITIATED</strong> on 
             <strong>{transaction_date}</strong>.
             </p>
 
             <p>
-                The transaction is currently <strong>under review</strong>. Once the verification process 
-                has been completed, the amount ({amount}XAF) will be credited to your savings account.
+                The transaction is currently <strong>UNDER REVIEW</strong>. Once the verification process 
+                has been completed, the amount ({amount} XAF) will be credited to your personal K12 savings account.
             </p>
 
             <p>
@@ -1121,7 +1121,7 @@ def make_donation_View(request,donationId):
             return redirect(f'/donation_sucessful/{donationTransaction_id}')
 
     else:
-        messages.info(request,"Donation could not be process")
+        messages.info(request,"Enter valid donation amount and reference.")
         return redirect(f'/make_donation/{donationId}')
     
     
@@ -1258,13 +1258,13 @@ def reconcile_transaction_View(request,transactionId):
                 'Messages': [{
                     "From": {"Email": settings.DEFAULT_FROM_EMAIL, "Name": settings.DEFAULT_FROM_NAME},
                     "To": [{"Email": member_instance.email, "Name": member_instance.first_name}],
-                    "Subject": f"Savings Transaction Completed {transaction_date}",
+                    "Subject": f"Savings Transaction Successful {transaction_date}",
                     "HTMLPart": f'''
                     <p>Dear <strong>{member_instance.first_name}</strong>,</p>
 
                     <p>
                         We are pleased to inform you that your savings transaction has been successfully 
-                        received and credited to your account on <strong>{transaction_date}</strong>.
+                        received by the BANK and credited to your account on <strong>{transaction_date}</strong>.
                     </p>
 
                     <p>
@@ -1380,3 +1380,15 @@ def finalise_make_withdrawalView(request):
         withdrawalID = create_new_withdrawal_log.id
         return redirect(f'/withdrawal_success/{withdrawalID}')
     
+    
+    
+    
+@login_required(login_url="/login")
+def pod_previewView(request,transactionID):
+    if request.user.is_authenticated:
+        data = {
+            "select_transaction": Transaction.objects.get(id=transactionID)
+        }
+        return render(request,'members/app_pod_preview.html',context=data)
+    else:
+        return render(request,'members/app-pod-preview.html')

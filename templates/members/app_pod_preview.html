@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+  {% include '../ext/header.html' %}
+
+  <body class="bg-white">
+    <!-- loader -->
+    {% include 'members/app_loader.html' %}
+    <!-- * loader -->
+
+    <!-- App Header -->
+    <div class="appHeader">
+      <div class="left">
+        <a href="#" class="headerButton goBack"><ion-icon name="chevron-back-outline"></ion-icon></a>
+      </div>
+      <div class="pageTitle">Proof of Payment Preview</div>
+    </div>
+    <!-- * App Header -->
+
+    <!-- App Capsule -->
+  <div id="appCapsule">
+<div class="fullscreen-image">
+  <img src="{{select_transaction.PODs.url }}" alt="Proof of Payment" />
+</div>
+    </div>
+
+    <style>
+    .fullscreen-image {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
+    background: #6236ff; /* optional for empty space */
+}
+
+.fullscreen-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* fills screen without distortion */
+}
+    </style>
+    <!-- * App Capsule -->
+
+    <!-- App Bottom Menu -->
+    {% include 'members/app_buttom_menu.html' %}
+    {% include 'members/app_modals.html' %}
+
+    <!-- App Bottom Menu -->
+
+    {% include '../ext/footer.html' %}
+  </body>
+</html>

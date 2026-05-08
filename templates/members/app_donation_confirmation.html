@@ -15,7 +15,7 @@
       <div class="left">
         <a href="#" class="headerButton goBack"><ion-icon name="chevron-back-outline"></ion-icon></a>
       </div>
-      <div class="pageTitle">Donation Confirmation</div>
+      <div class="pageTitle">Contribution Confirmation</div>
       <div class="right"></div>
     </div>
     <!-- * App Header -->
@@ -26,7 +26,7 @@
         <div class="splash-page mt-5 mb-5">
           <div class="transfer-verification">
             <div class="transfer-amount">
-              <span class="caption">Donation</span>
+              <span class="caption">Contributions</span>
               <h2>{{ donation_instance.minDonationAmount }} XAF</h2>
             </div>
             <div class="from-to-block mb-5">
@@ -43,7 +43,7 @@
           </div>
           {% comment %} <h2 class="mb-2 mt-2">Process Payment</h2> {% endcomment %}
           <p>
-            You are about to donation <strong class="text-primary">{{ donation_instance.minDonationAmount }} XAF</strong> to {{donation_instance.member.first_name | upper}} {{donation_instance.member.last_name | upper}}  <br />
+            You are about to Contribution <strong class="text-primary">{{ donation_instance.minDonationAmount }} XAF</strong> to {{donation_instance.member.first_name | upper}} {{donation_instance.member.last_name | upper}}  <br />
             Reason: <br>
             {{donation_instance.description}}
         </p>
@@ -54,7 +54,7 @@
         <div class="container">
           <div class="row">
             <div class="col-6">
-              <a href="/donations_log/{{donation_instance.id}}" class="btn btn-lg btn-outline-secondary btn-block">Donations</a>
+              <a href="/donations_log/{{donation_instance.id}}" class="btn btn-lg btn-outline-secondary btn-block">Contributions</a>
             </div>
             <div class="col-6">
 
@@ -67,7 +67,7 @@
 
             {% if donation_instance.donationStatus == "Pending" %}
             <a  data-bs-toggle="modal" id="closeDonationLink" data-bs-target="#DialogBasic" class="btn btn-lg btn-warning btn-block">
-            Close Donation
+            Close Contributions
             </a>
             {% else %}
             <a href="#"  class="btn btn-lg btn-primary btn-block">
@@ -78,7 +78,7 @@
             {% else %}
 
             {% if donation_instance.donationStatus == "Pending" %}
-            <input type="submit" class="btn btn-lg btn-danger btn-block" value="Donate Now">
+            <input type="submit" class="btn btn-lg btn-danger btn-block" value="Contribute Now">
             {% else %}
             <button disabled class="btn btn-lg btn-warning btn-block">Closed</button>
             {% endif %}
@@ -90,7 +90,7 @@
           <div class="container">
               <br><br><br>
           {% if donation_instance.donationStatus == "Completed" and donation_instance.member.username == request.user.username and donation_instance.totalDonationAmount > 0 %}
-          <a href="/transfer_donation/{{donation_instance.id}}" class="btn btn-lg btn-success btn-block">Withdrawal Donation</a>
+          <a href="/transfer_donation/{{donation_instance.id}}" class="btn btn-lg btn-success btn-block">Withdrawal Contribution</a>
           {% else %}
           
           {% endif %}
@@ -104,11 +104,11 @@
         <div class="modal-content">
             
             <div class="modal-header">
-                <h5 class="modal-title">Close Donation</h5>
+                <h5 class="modal-title">Close Contributions</h5>
             </div>
 
             <div class="modal-body">
-                Are you sure you want to close this Donation?
+                Are you sure you want to close this Contributions?
             </div>
 
             <div class="modal-footer">

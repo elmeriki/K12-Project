@@ -79,6 +79,9 @@ urlpatterns = [
     path('photo_change_successful', views.photo_change_successfulView, name='photo_change_successfulView'),
 
 
+    path('pod_preview/<int:transactionID>', views.pod_previewView, name='pod_previewView'),
+
+
     # DEMO LINKS
     # path('error_404_view', views.error_404_view, name='error_404_view'),
     # path('error_500_view', views.error_500_view, name='error_500_view'),
